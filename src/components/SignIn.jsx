@@ -4,7 +4,6 @@ import Title from "./Title";
 import Paragraph from "./Paragraph";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import Cookies from "js-cookie";
 
 const Details = () => {
   const handleSubmit = (event) => {
@@ -86,7 +85,6 @@ const Details = () => {
             console.log("password: ",password);
             var myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
-            // myHeaders.append("Cookie", "user_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTQ5ZjVhZmYwNzAxMTUzOTBmOWVlMjciLCJpYXQiOjE2OTk3MDM5OTQsImV4cCI6MTY5OTcwNzU5NH0.xEoPT8ed8MhusgJJUDKXIXYDaWuNzwhfna1X5331HMY");
 
             var raw = JSON.stringify({
               email: email,
@@ -96,6 +94,7 @@ const Details = () => {
             var requestOptions = {
               method: "POST",
               headers: myHeaders,
+              credentials: 'include',
               body: raw,
               redirect: "follow",
             };
@@ -104,7 +103,6 @@ const Details = () => {
               .then((response) => response.text())
               .then((result) => {
                 console.log("result on frontend: ",result);
-                // Cookies.set("user_token",JSON.parse(result).token)
                 navigate("/myTests");
               })
               .catch((error) => console.log("error", error));

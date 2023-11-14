@@ -25,7 +25,7 @@ function App() {
       element: <About />,
     },
     {
-      path: "/contact",
+      path: "/register",
       element: <Contact />,
     },
     {

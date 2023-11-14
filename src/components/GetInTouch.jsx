@@ -29,7 +29,7 @@ const GetInTouch = () => {
       />
       <Button
         component={Link}
-        to={"/contact"}
+        to={"/register"}
         variant="contained"
         type="submit"
         size="medium"

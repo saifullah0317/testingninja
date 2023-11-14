@@ -5,11 +5,6 @@ import FormControl from "@mui/material/FormControl";
 import Box from "@mui/material/Box";
 import SearchIcon from "@mui/icons-material/Search";
 import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import InputLabel from "@mui/material/InputLabel";
-import axios from "axios";
-import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 function MyTests() {
   const [tests, setTests] = useState([]);

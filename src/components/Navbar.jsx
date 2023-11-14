@@ -39,11 +39,11 @@ const itemList = [
     to: "/about",
   },
   {
-    text: "Signup",
-    to: "/contact",
+    text: "signup",
+    to: "/register",
   },
   {
-    text: "Signin",
+    text: "signin",
     to: "/signin",
   },
 ];

@@ -45,7 +45,7 @@ const itemList = [
   {
     text: "Contact",
     icon: <EmailIcon />,
-    to: "/contact",
+    to: "/register",
   },
 ];
 
