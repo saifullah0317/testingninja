@@ -10,7 +10,7 @@ export default function Navbar({selectedRoute}) {
   return (
     // <div>
       <nav className="bg-yellow shadow-2xl absolute w-full">
-        <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+        <div className="flex flex-wrap items-center justify-between mx-auto p-4">
           <Link
             href="/"
             className="flex items-center rtl:space-x-reverse"
