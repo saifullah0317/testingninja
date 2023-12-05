@@ -5,8 +5,9 @@ export default function Home() {
     <main>
       <Navbar selectedRoute='home'/>
       <section id='first'>
-        <div className='bg-yellow text-white h-screen'>Turn yourtestsinto success stories
-AI-powered skills and knowledge assessment software, serving 2.5M+ business and educational users worldwide.</div>
+        <div className='bg-yellow h-screen'>
+          <div className='mt-20 text-purple'>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</div>
+        </div>
       </section>
       <section id='second'>
         <div className='bg-white h-screen'>aaa</div>
