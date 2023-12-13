@@ -9,9 +9,12 @@ module.exports = {
     colors:{
       transparent:'transparent',
       current:'currentColor',
-      'purple':'#670f8c',
+      'purple':'#510173',
       'yellow':'#fcad00',
-      'white':'#ffffff'
+      'white':'#ffffff',
+      'lightpurple':'#670f8c',
+      'gray':'#d2c4fb',
+      'darkgray':'#6f6689'
     },
     extend: {
       backgroundImage: {

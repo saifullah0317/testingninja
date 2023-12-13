@@ -1,20 +1,23 @@
+"use client"
 import Link from "next/link";
 import Image from "next/image";
-export default function Navbar({selectedRoute}) {
+import { useState } from "react";
+export default function Navbar({selectedRoute, got_bg}) {
+  const [bg,setBg]=useState(got_bg)
   function highlightRoute(divRoute){
       if(selectedRoute===divRoute){
           return 'font-bold'
       }
-      return 'font-'
+      return ''
   }
   return (
-    <nav className="bg-yellow shadow-2xl fixed w-full z-20 top-0 start-0 border-b border-yellow ">
+    <nav className={`${bg} fixed w-full z-20 top-0 left-0 right-0 start-0`}>
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <Link
           href="/"
           className="flex items-center space-x-3 rtl:space-x-reverse"
         >
-          <Image src="/static/logo.png" height={60} width={60} style={{borderRadius:'100px'}} alt="logo"/>
+          <Image src="/images/logo.png" height={60} width={60} style={{borderRadius:'100px'}} alt="logo"/>
           <span className="text-purple self-center text-2xl font-semibold whitespace-nowrap ">
             testingninja
           </span>
@@ -22,16 +25,17 @@ export default function Navbar({selectedRoute}) {
         <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
           {/* <button
             type="button"
-            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center "
+            className="text-white  font-medium rounded-lg text-sm px-4 py-2 text-center md:bg-purple bg-purple"
           >
             Get started
           </button> */}
           <button
             data-collapse-toggle="navbar-sticky"
             type="button"
-            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-purple rounded-lg md:hidden hover:bg-yellow focus:outline-none focus:ring-2 focus:ring-yellow "
+            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-purple rounded-lg md:hidden hover:bg-transparent focus:outline-none"
             aria-controls="navbar-sticky"
             aria-expanded="false"
+            onClick={()=>{setBg("bg-white shadow-2xl")}}
           >
             <span className="sr-only">Open main menu</span>
             <svg
@@ -55,12 +59,13 @@ export default function Navbar({selectedRoute}) {
           className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
           id="navbar-sticky"
         >
-          <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-yellow rounded-lg bg-yellow md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-yellow ">
+          <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:bg-transparent ">
             <li>
               <Link
                 href="/"
-                className={`text-purple block py-2 px-3 ${highlightRoute('home')} rounded bg-transparent md:hover:text-purple md:p-0 `}
+                className={`text-lg text-purple block py-2 px-3 ${highlightRoute('home')} bg-transparent md:hover:text-purple md:p-0 `}
                 aria-current="page"
+                style={selectedRoute==='home'?{borderBottom:"3px solid currentColor"}:{}}
               >
                 Home
               </Link>
@@ -68,15 +73,36 @@ export default function Navbar({selectedRoute}) {
             <li>
               <Link
                 href="/about"
-                className={`text-purple block py-2 px-3 ${highlightRoute('about')} rounded hover:bg-yellow md:hover:bg-transparent md:hover:text-purple md:p-0 `}
+                className={`text-lg text-purple block py-2 px-3 ${highlightRoute('about')} hover:bg-transparent md:hover:bg-transparent md:hover:text-purple md:p-0 `}
+                style={selectedRoute==='about'?{borderBottom:"3px solid currentColor"}:{}}
               >
-                About
+                Product
               </Link>
             </li>
             <li>
               <Link
+                href="/pricing"
+                className={`text-lg text-purple block py-2 px-3 ${highlightRoute('pricing')} hover:bg-transparent md:hover:bg-transparent md:hover:text-purple md:p-0 `}
+                style={selectedRoute==='pricing'?{borderBottom:"3px solid currentColor"}:{}}
+              >
+                Pricing
+              </Link>
+            </li>
+            <li>
+              {/* <a> */}
+              <Link
+                href="/#contact"
+                className={`text-lg text-purple block py-2 px-3 hover:bg-transparent md:hover:bg-transparent md:hover:text-purple md:p-0`}
+              >
+                Contact
+              </Link>
+              {/* </a> */}
+            </li>
+            <li>
+              <Link
                 href="/login"
-                className={`text-purple block py-2 px-3 ${highlightRoute('login')} rounded hover:bg-yellow md:hover:bg-transparent md:hover:text-purple md:p-0 `}
+                className={`text-lg text-purple block py-2 px-3 ${highlightRoute('login')} hover:bg-transparent md:hover:bg-transparent md:hover:text-purple md:p-0 `}
+                style={selectedRoute==='login'?{borderBottom:"3px solid currentColor"}:{}}
               >
                 Login
               </Link>
@@ -84,7 +110,8 @@ export default function Navbar({selectedRoute}) {
             <li>
               <Link
                 href="/signup"
-                className={`text-purple block py-2 px-3 ${highlightRoute('signup')} rounded hover:bg-yellow md:hover:bg-transparent md:hover:text-purple md:p-0 `}
+                className={`text-lg text-purple block py-2 px-3 ${highlightRoute('signup')} hover:bg-transparent md:hover:bg-transparent md:hover:text-purple md:p-0 `}
+                style={selectedRoute==='signup'?{borderBottom:"3px solid currentColor"}:{}}
               >
                 Sign up
               </Link>
