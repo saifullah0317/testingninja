@@ -20,13 +20,10 @@ export default function Home() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-  const navbarClass = isScrolled ? "bg-white shadow-2xl" : "bg-transparent";
+  const navbarClass = isScrolled ? "bg-white shadow-2xl" : "bg-yellow";
   return (
     <main>
-      <Navbar
-        selectedRoute="home"
-        bg={navbarClass}
-      />
+      <Navbar selectedRoute="home" bg={navbarClass} />
       <div className="h-24 bg-yellow"></div>
       <section id="first">
         <div className="bg-yellow flex flex-col lg:flex-row md:flex-row justify-evenly items-center">
@@ -59,15 +56,15 @@ export default function Home() {
       <section className="bg-gray flex lg:flex-row md:flex-row flex-col py-6 px-5 justify-evenly">
         <div className="flex flex-col mb-5">
           <span className="text-purple text-xl font-bold">
-            Want to generate test?
+            Here to take a test?
           </span>
           <span className="text-darkgray">
-            Sign up for free and generate test questions.
+            Enter your email address and test access-key.
           </span>
         </div>
         <div className="h-26">
           <button className="bg-purple text-white px-5 py-3 font-semibold rounded-lg ">
-            Generate test
+            Attempt test
           </button>
         </div>
       </section>
@@ -104,20 +101,15 @@ export default function Home() {
       <section className="bg-gray flex lg:flex-row md:flex-row flex-col py-6 px-5 justify-evenly">
         <div className="flex flex-col mb-5">
           <span className="text-purple text-xl font-bold">
-            Here to take a test?
+            Want to generate test?
           </span>
           <span className="text-darkgray">
-            Enter your email address and test access-key.
+            Sign up for free and generate test questions.
           </span>
         </div>
-        <div className="h-12 flex flex-row">
-          <input
-            type="text"
-            className="mr-5 rounded-lg bg-gray text-purple font-medium"
-            placeholder="Enter text key here"
-          ></input>
+        <div className="h-26">
           <button className="bg-purple text-white px-5 py-3 font-semibold rounded-lg ">
-            Attempt test
+            Generate test
           </button>
         </div>
       </section>

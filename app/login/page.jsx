@@ -8,7 +8,7 @@ export default function login() {
       <div className="flex items-center justify-center mt-28 mb-12">
       <Login/>
       </div>
-      <Footer/>
+      {/* <Footer/> */}
     </div>
   )
 }
