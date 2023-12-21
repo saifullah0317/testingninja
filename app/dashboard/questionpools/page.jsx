@@ -3,7 +3,7 @@ import Dropdown from "@/app/components/Dropdown";
 import Searchbar from "@/app/components/Searchbar";
 import Testcard from "@/app/components/Testcard";
 import Filtertests from "@/app/components/Filtertests";
-export default function mytests() {
+export default function questionpools() {
   const tests = [
     {
       id: 1,
@@ -60,14 +60,14 @@ export default function mytests() {
     <>
       <div className="flex lg:flex-row md:flex-row lg:space-y-0 md:space-y-0 space-y-3 flex-col justify-between">
         <div className="text-lg font-semibold text-spurple-300">
-          My tests <span className="text-sgray-300">(6)</span>
+          Questions pools <span className="text-sgray-300">(6)</span>
         </div>
         <div className="flex lg:flex-row md:flex-row lg:space-y-0 md:space-y-0 space-y-3 flex-col sm:space-x-5">
           <button className="px-3 py-2 bg-spurple-300 text-swhite text-md font-medium rounded-lg">
             Generate questions
           </button>
           <button className="px-3 py-2 bg-spurple-300 text-swhite text-md font-medium rounded-lg">
-            New test
+            New pool
           </button>
         </div>
       </div>

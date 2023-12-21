@@ -24,21 +24,21 @@ export default function Navbar({ selectedRoute, bg }) {
             className="rounded-full"
             alt="logo"
           />
-          <span className="text-purple self-center text-2xl font-semibold whitespace-nowrap ">
+          <span className="text-spurple-300 self-center text-2xl font-semibold swhitespace-nowrap ">
             testingninja
           </span>
         </Link>
         <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
           {/* <button
             type="button"
-            className="text-white  font-medium rounded-lg text-sm px-4 py-2 text-center md:bg-purple bg-purple"
+            className="text-swhite  font-medium rounded-lg text-sm px-4 py-2 text-center md:bg-spurple-300 bg-spurple-300"
           >
             Get started
           </button> */}
           <button
             data-collapse-toggle="navbar-sticky"
             type="button"
-            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-purple rounded-lg md:hidden hover:bg-transparent focus:outline-none"
+            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-spurple-300 rounded-lg md:hidden hover:bg-transparent focus:outline-none"
             aria-controls="navbar-sticky"
             aria-expanded="false"
           >
@@ -68,9 +68,9 @@ export default function Navbar({ selectedRoute, bg }) {
             <li>
               <Link
                 href="/"
-                className={`text-lg text-purple block py-2 px-3 ${highlightRoute(
+                className={`text-lg text-spurple-300 block py-2 px-3 ${highlightRoute(
                   "home"
-                )} bg-transparent md:hover:text-purple md:p-0 `}
+                )} bg-transparent md:hover:text-spurple-300 md:p-0 `}
                 aria-current="page"
                 style={
                   selectedRoute === "home"
@@ -84,9 +84,9 @@ export default function Navbar({ selectedRoute, bg }) {
             <li>
               <Link
                 href="/about"
-                className={`text-lg text-purple block py-2 px-3 ${highlightRoute(
+                className={`text-lg text-spurple-300 block py-2 px-3 ${highlightRoute(
                   "about"
-                )} hover:bg-transparent md:hover:bg-transparent md:hover:text-purple md:p-0 `}
+                )} hover:bg-transparent md:hover:bg-transparent md:hover:text-spurple-300 md:p-0 `}
                 style={
                   selectedRoute === "about"
                     ? { borderBottom: "3px solid currentColor" }
@@ -99,9 +99,9 @@ export default function Navbar({ selectedRoute, bg }) {
             <li>
               <Link
                 href="/pricing"
-                className={`text-lg text-purple block py-2 px-3 ${highlightRoute(
+                className={`text-lg text-spurple-300 block py-2 px-3 ${highlightRoute(
                   "pricing"
-                )} hover:bg-transparent md:hover:bg-transparent md:hover:text-purple md:p-0 `}
+                )} hover:bg-transparent md:hover:bg-transparent md:hover:text-spurple-300 md:p-0 `}
                 style={
                   selectedRoute === "pricing"
                     ? { borderBottom: "3px solid currentColor" }
@@ -115,7 +115,7 @@ export default function Navbar({ selectedRoute, bg }) {
               {/* <a> */}
               <Link
                 href="/#contact"
-                className={`text-lg text-purple block py-2 px-3 hover:bg-transparent md:hover:bg-transparent md:hover:text-purple md:p-0`}
+                className={`text-lg text-spurple-300 block py-2 px-3 hover:bg-transparent md:hover:bg-transparent md:hover:text-spurple-300 md:p-0`}
               >
                 Contact
               </Link>
@@ -124,9 +124,9 @@ export default function Navbar({ selectedRoute, bg }) {
             <li>
               <Link
                 href="/login"
-                className={`text-lg text-purple block py-2 px-3 ${highlightRoute(
+                className={`text-lg text-spurple-300 block py-2 px-3 ${highlightRoute(
                   "login"
-                )} hover:bg-transparent md:hover:bg-transparent md:hover:text-purple md:p-0 `}
+                )} hover:bg-transparent md:hover:bg-transparent md:hover:text-spurple-300 md:p-0 `}
                 style={
                   selectedRoute === "login"
                     ? { borderBottom: "3px solid currentColor" }
@@ -139,9 +139,9 @@ export default function Navbar({ selectedRoute, bg }) {
             <li>
               <Link
                 href="/signup"
-                className={`text-lg text-purple block py-2 px-3 ${highlightRoute(
+                className={`text-lg text-spurple-300 block py-2 px-3 ${highlightRoute(
                   "signup"
-                )} hover:bg-transparent md:hover:bg-transparent md:hover:text-purple md:p-0 `}
+                )} hover:bg-transparent md:hover:bg-transparent md:hover:text-spurple-300 md:p-0 `}
                 style={
                   selectedRoute === "signup"
                     ? { borderBottom: "3px solid currentColor" }

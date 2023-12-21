@@ -9,12 +9,22 @@ module.exports = {
     colors:{
       transparent:'transparent',
       current:'currentColor',
-      'purple':'#510173',
-      'yellow':'#fcad00',
-      'white':'#ffffff',
-      'lightpurple':'#6a0396',
-      'gray':'#d2c4fb',
-      'darkgray':'#6f6689'
+      'swhite':'#ffffff',
+      'sgreen':'#43ad32',
+      'spurple':{
+        100:'#f0d9fa',
+        200:'#6a0396',
+        300:'#510173',
+      },
+      'syellow':{
+        100:'#f7cd72',
+        200:'#fcad00',
+      },
+      'sgray':{
+        100:'#efebfc',
+        200:'#d2c4fb',
+        300:'#6f6689',
+      },
     },
     extend: {
       backgroundImage: {

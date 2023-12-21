@@ -1,13 +1,13 @@
 export default function Price() {
   return (
-    <div class="w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
-      <h5 class="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">
+    <div class="w-full max-w-sm p-4 bg-swhite border border-sgray-200 rounded-lg shadow sm:p-8 dark:bg-sgray-800 dark:border-sgray-700">
+      <h5 class="mb-4 text-xl font-medium text-sgray-500 dark:text-sgray-400">
         Standard plan
       </h5>
-      <div class="flex items-baseline text-gray-900 dark:text-white">
+      <div class="flex items-baseline text-sgray-900 dark:text-swhite">
         <span class="text-3xl font-semibold">$</span>
         <span class="text-5xl font-extrabold tracking-tight">49</span>
-        <span class="ms-1 text-xl font-normal text-gray-500 dark:text-gray-400">
+        <span class="ms-1 text-xl font-normal text-sgray-500 dark:text-sgray-400">
           /month
         </span>
       </div>
@@ -22,7 +22,7 @@ export default function Price() {
           >
             <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
           </svg>
-          <span class="text-base font-normal leading-tight text-gray-500 dark:text-gray-400 ms-3">
+          <span class="text-base font-normal leading-tight text-sgray-500 dark:text-sgray-400 ms-3">
             2 team members
           </span>
         </li>
@@ -36,7 +36,7 @@ export default function Price() {
           >
             <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
           </svg>
-          <span class="text-base font-normal leading-tight text-gray-500 dark:text-gray-400 ms-3">
+          <span class="text-base font-normal leading-tight text-sgray-500 dark:text-sgray-400 ms-3">
             20GB Cloud storage
           </span>
         </li>
@@ -50,13 +50,13 @@ export default function Price() {
           >
             <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
           </svg>
-          <span class="text-base font-normal leading-tight text-gray-500 dark:text-gray-400 ms-3">
+          <span class="text-base font-normal leading-tight text-sgray-500 dark:text-sgray-400 ms-3">
             Integration help
           </span>
         </li>
-        <li class="flex line-through decoration-gray-500">
+        <li class="flex line-through decoration-sgray-500">
           <svg
-            class="flex-shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500"
+            class="flex-shrink-0 w-4 h-4 text-sgray-400 dark:text-sgray-500"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             fill="currentColor"
@@ -64,13 +64,13 @@ export default function Price() {
           >
             <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
           </svg>
-          <span class="text-base font-normal leading-tight text-gray-500 ms-3">
+          <span class="text-base font-normal leading-tight text-sgray-500 ms-3">
             Sketch Files
           </span>
         </li>
-        <li class="flex line-through decoration-gray-500">
+        <li class="flex line-through decoration-sgray-500">
           <svg
-            class="flex-shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500"
+            class="flex-shrink-0 w-4 h-4 text-sgray-400 dark:text-sgray-500"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             fill="currentColor"
@@ -78,13 +78,13 @@ export default function Price() {
           >
             <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
           </svg>
-          <span class="text-base font-normal leading-tight text-gray-500 ms-3">
+          <span class="text-base font-normal leading-tight text-sgray-500 ms-3">
             API Access
           </span>
         </li>
-        <li class="flex line-through decoration-gray-500">
+        <li class="flex line-through decoration-sgray-500">
           <svg
-            class="flex-shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500"
+            class="flex-shrink-0 w-4 h-4 text-sgray-400 dark:text-sgray-500"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             fill="currentColor"
@@ -92,13 +92,13 @@ export default function Price() {
           >
             <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
           </svg>
-          <span class="text-base font-normal leading-tight text-gray-500 ms-3">
+          <span class="text-base font-normal leading-tight text-sgray-500 ms-3">
             Complete documentation
           </span>
         </li>
-        <li class="flex line-through decoration-gray-500">
+        <li class="flex line-through decoration-sgray-500">
           <svg
-            class="flex-shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500"
+            class="flex-shrink-0 w-4 h-4 text-sgray-400 dark:text-sgray-500"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             fill="currentColor"
@@ -106,14 +106,14 @@ export default function Price() {
           >
             <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
           </svg>
-          <span class="text-base font-normal leading-tight text-gray-500 ms-3">
+          <span class="text-base font-normal leading-tight text-sgray-500 ms-3">
             24×7 phone & email support
           </span>
         </li>
       </ul>
       <button
         type="button"
-        class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-200 dark:focus:ring-blue-900 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center"
+        class="text-swhite bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-200 dark:focus:ring-blue-900 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center"
       >
         Choose plan
       </button>
