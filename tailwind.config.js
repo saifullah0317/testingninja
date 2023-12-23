@@ -25,6 +25,10 @@ module.exports = {
         200:'#d2c4fb',
         300:'#6f6689',
       },
+      'sblue':{
+        100:'#eff6ff',
+        200:'#1e40af'
+      }
     },
     extend: {
       backgroundImage: {

@@ -62,14 +62,11 @@ export default function mytests() {
         <div className="text-lg font-semibold text-spurple-300">
           My tests <span className="text-sgray-300">(6)</span>
         </div>
-        <div className="flex lg:flex-row md:flex-row lg:space-y-0 md:space-y-0 space-y-3 flex-col sm:space-x-5">
-          <button className="px-3 py-2 bg-spurple-300 text-swhite text-md font-medium rounded-lg">
-            Generate questions
-          </button>
+        <Link href="/dashboard/generatetest">
           <button className="px-3 py-2 bg-spurple-300 text-swhite text-md font-medium rounded-lg">
             New test
           </button>
-        </div>
+        </Link>
       </div>
       {/* <div className="grid grid-cols-4 divide-x-0 bg-swhite py-2 px-3 space-x-3 rounded-lg mt-5">
         <div className="text-lg flex flex-row justify-between items-center">

@@ -63,7 +63,7 @@ export default function Dashboard() {
                 </span>
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link
                 href="/dashboard/questions"
                 className="flex items-center p-2 text-sgray-300 rounded-lg  hover:bg-spurple-100 hover:text-spurple-300 group"
@@ -81,7 +81,7 @@ export default function Dashboard() {
                   Questions pool
                 </span>
               </Link>
-            </li>
+            </li> */}
             <li>
               <Link
                 href="/dashboard/questions"
