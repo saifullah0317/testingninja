@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useState } from "react";
-import DefaultModal from "@/app/components/defaultModal";
+import DefaultModal from "@/app/components/DefaultModal";
 import CustomQuestionModal from "@/app/components/CustomQuestionModal";
 import CustomMcqModal from "@/app/components/CustomMcqModal";
 export default function Generatetest() {
