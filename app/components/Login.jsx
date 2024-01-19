@@ -7,15 +7,15 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [psw, setPsw] = useState("");
   function handleLogin(){
-    var myHeaders = new Headers();
+    let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    var raw = JSON.stringify({
+    let raw = JSON.stringify({
       email: email,
       password: psw
     });
 
-    var requestOptions = {
+    let requestOptions = {
       method: "POST",
       headers: myHeaders,
       credentials: 'include',

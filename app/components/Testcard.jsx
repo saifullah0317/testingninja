@@ -1,5 +1,5 @@
 import React from "react";
-
+import { convertDateFormat } from "../Helper";
 export default function Testcard({
   status,
   date,
@@ -37,7 +37,7 @@ export default function Testcard({
               </span>
             </div>
             <span className="text-md text-sgray-300 font-medium">
-              Created: {date}
+              Created: {convertDateFormat(date)}
             </span>
           </div>
           <span className="text-xl font-bold text-spurple-300">{title}</span>

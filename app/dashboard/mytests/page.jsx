@@ -1,61 +1,77 @@
+"use client"
 import Link from "next/link";
-import Dropdown from "@/app/components/Dropdown";
-import Searchbar from "@/app/components/Searchbar";
 import Testcard from "@/app/components/Testcard";
 import Filtertests from "@/app/components/Filtertests";
-export default function mytests() {
-  const tests = [
-    {
-      id: 1,
-      status: true,
-      date: "December 18, 2023",
-      title: "Dummy test",
-      description: "this is the description of the dummy test",
-      avgScore: "-",
-      results: "0",
-      category: "Uncategorized",
-    },
-    {
-      id: 2,
-      status: true,
-      date: "December 18, 2023",
-      title: "Dummy test",
-      description: "this is the description of the dummy test",
-      avgScore: "-",
-      results: "0",
-      category: "Uncategorized",
-    },
-    {
-      id: 3,
-      status: true,
-      date: "December 18, 2023",
-      title: "Dummy test",
-      description: "this is the description of the dummy test",
-      avgScore: "-",
-      results: "0",
-      category: "Uncategorized",
-    },
-    {
-      id: 4,
-      status: true,
-      date: "December 18, 2023",
-      title: "Dummy test",
-      description: "this is the description of the dummy test",
-      avgScore: "-",
-      results: "0",
-      category: "Uncategorized",
-    },
-    {
-      id: 5,
-      status: true,
-      date: "December 18, 2023",
-      title: "Dummy test",
-      description: "this is the description of the dummy test",
-      avgScore: "-",
-      results: "0",
-      category: "Uncategorized",
-    },
-  ];
+import { useEffect, useState } from "react";
+export default function Mytests() {
+  const [tests,setTests]=useState([]);
+  useEffect(() => {
+    let myHeaders = new Headers();
+
+    let requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+      credentials:'include'
+    };
+
+    fetch(`${process.env.backendUrl}/test`, requestOptions)
+      .then((response) => response.text())
+      .then((result) => setTests(JSON.parse(result)))
+      .catch((error) => alert("error: ", error));
+  }, [setTests]);
+  // const tests = [
+  //   {
+  //     id: 1,
+  //     status: true,
+  //     date: "December 18, 2023",
+  //     title: "Dummy test",
+  //     description: "this is the description of the dummy test",
+  //     avgScore: "-",
+  //     results: "0",
+  //     category: "Uncategorized",
+  //   },
+  //   {
+  //     id: 2,
+  //     status: true,
+  //     date: "December 18, 2023",
+  //     title: "Dummy test",
+  //     description: "this is the description of the dummy test",
+  //     avgScore: "-",
+  //     results: "0",
+  //     category: "Uncategorized",
+  //   },
+  //   {
+  //     id: 3,
+  //     status: true,
+  //     date: "December 18, 2023",
+  //     title: "Dummy test",
+  //     description: "this is the description of the dummy test",
+  //     avgScore: "-",
+  //     results: "0",
+  //     category: "Uncategorized",
+  //   },
+  //   {
+  //     id: 4,
+  //     status: true,
+  //     date: "December 18, 2023",
+  //     title: "Dummy test",
+  //     description: "this is the description of the dummy test",
+  //     avgScore: "-",
+  //     results: "0",
+  //     category: "Uncategorized",
+  //   },
+  //   {
+  //     id: 5,
+  //     status: true,
+  //     date: "December 18, 2023",
+  //     title: "Dummy test",
+  //     description: "this is the description of the dummy test",
+  //     avgScore: "-",
+  //     results: "0",
+  //     category: "Uncategorized",
+  //   },
+  // ];
   return (
     <>
       <div className="flex lg:flex-row md:flex-row lg:space-y-0 md:space-y-0 space-y-3 flex-col justify-between">
@@ -100,15 +116,15 @@ export default function mytests() {
       <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 mt-5">
         {tests.map((test) => (
           <Link href="/" key={test.id}>
-          <Testcard
-            status={test.status}
-            date={test.date}
-            title={test.title}
-            description={test.description}
-            avgScore={test.avgScore}
-            results={test.results}
-            category={test.category}
-          />
+            <Testcard
+              status={test.status}
+              date={test.createdAt}
+              title={test.title}
+              description={test.description}
+              avgScore={test.avgScore}
+              results={test.results}
+              category={test.category}
+            />
           </Link>
         ))}
       </div>
