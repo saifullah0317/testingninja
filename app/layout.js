@@ -1,5 +1,6 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
+import RespondentlistState from "./context/RespondentlistState";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +19,7 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body className={inter.className}>
-        {children}
+        <RespondentlistState>{children}</RespondentlistState>
         <script
           src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/datepicker.min.js"
           async
