@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { convertDateFormat } from "../Helper";
 import Deleteicon from "./Deleteicon";
 import LinkIcon from "./LinkIcon";
+import { RespondentlistContext } from "../context/RespondentlistState";
+import Link from "next/link";
 export default function Respondentcard({
   date,
   title,
   description,
   attempters,
 }) {
+  const {list,setList}=useContext(RespondentlistContext);
   function convertEmails(respondentsList) {
     let emails = [];
     respondentsList.map((respondent) => {
@@ -35,10 +38,19 @@ export default function Respondentcard({
             <span className="text-md text-sgray-300 font-medium">
               Created: {date ? convertDateFormat(date) : <></>}
             </span>
-            <button>
+            <Link href="/dashboard/respondentlist">
+            <button onClick={()=>{
+              setList({
+                create:false,
+                title,
+                description,
+                attempters:attempters.map((attempter)=>attempter.email)
+              })
+            }}>
               {/* <Deleteicon size={25} hover={true} /> */}
               <LinkIcon/>
             </button>
+            </Link>
           </div>
           <span className="text-xl font-bold text-spurple-300">{title}</span>
           <span className="text-lg text-sgray-300 font-normal">

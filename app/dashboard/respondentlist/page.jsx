@@ -210,14 +210,16 @@ export default function Respondentlist() {
             }}
           />
         </div>
-        <div className="bg-swhite p-5 rounded-lg shadow-lg flex flex-col space-y-10">
+        <div className="bg-swhite p-5 rounded-lg shadow-lg">
           <span className="text-md font-medium text-spurple-300">
             EMAIL LIST
           </span>
+          <div className="flex lg:flex-row md:flex-row flex-col space-y-5 items-start justify-between mt-5">
+          <div className="flex flex-col space-y-10">
           <div>
             <p>Import email list from file</p>
             <p>
-              If you have a list of addresses in the text file or CSV (*.xlsx,
+              If you have a list of addresses in the CSV (*.xlsx,
               *csv) format, upload it here:
             </p>
 
@@ -251,12 +253,14 @@ export default function Respondentlist() {
                     setChanged(true);
                   }
                   setEmails(Array.from(new Set([newEmail, ...emails])));
+                  setNewEmail("");
                   console.log("emails: ", emails);
                 }}
               >
                 Add
               </button>
             </div>
+          </div>
           </div>
           <div
             className={
@@ -309,6 +313,7 @@ export default function Respondentlist() {
                 </tbody>
               </table>
             </div>
+          </div>
           </div>
         </div>
       </div>
