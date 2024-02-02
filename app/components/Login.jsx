@@ -2,11 +2,15 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-export default function Login() {
+export default function Login({setErrorMessage, firstTime=true}) {
   const router=useRouter();
   const [email, setEmail] = useState("");
   const [psw, setPsw] = useState("");
   function handleLogin(){
+    if(!email || !psw){
+      setErrorMessage("Please enter email and password to login.")
+    }
+    else{
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
@@ -26,16 +30,28 @@ export default function Login() {
     fetch("http://localhost:8080/auth/login", requestOptions)
       .then((response) => response.text())
       .then((result) => {
-        console.log("result on frontend: ",result);
-        console.log("status code: ",typeof result)
         if(JSON.parse(result).token){
-          router.push("/dashboard/mytests");
+          if(firstTime=='false'){
+            router.back();
+          }
+          else{
+            router.push("/dashboard/mytests");
+          }
         }
         else{
-          // invalid credentials messagebox
+          if(JSON.parse(result).message){
+            setErrorMessage(JSON.parse(result).message);
+          }
+          else{
+            setErrorMessage(JSON.stringify(result));
+          }
         }
       })
-      .catch((error) => console.log("error", error));
+      .catch((error) => {
+        setErrorMessage(JSON.stringify(error));
+        console.log("error in catch: ",error)
+      });
+    }
   }
   return (
     <div className="w-96 border-swhite shadow-2xl rounded-lg py-10 px-10 flex flex-col space-y-6">

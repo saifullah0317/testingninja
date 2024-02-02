@@ -10,7 +10,7 @@ import { useEffect, useState, useContext } from "react";
 export default function Respondents() {
   const [lists,setLists]=useState([]);
   const [errorMessage,setErrorMessage]=useState(false);
-  const {list,setList}=useContext(RespondentlistContext);
+  const {completelist,setCompletelist}=useContext(RespondentlistContext);
   useEffect(() => {
     var myHeaders = new Headers();
     var requestOptions = {
@@ -38,7 +38,7 @@ export default function Respondents() {
         </div>
         <Link href="/dashboard/respondentlist">
           <button onClick={()=>{
-            setList({
+            setCompletelist({
               create:true,
               title:'',
               description:'',

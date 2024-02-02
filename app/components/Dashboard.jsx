@@ -1,11 +1,20 @@
-// "use client"
+"use client"
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-// import { useSelectedLayoutSegment } from "next/navigation";
 export default function Dashboard() {
-  // const router=useSelectedLayoutSegment();
-  // console.log("current route: ",router);
+  function logout(){
+    var requestOptions = {
+      method: 'GET',
+      redirect: 'follow',
+      credentials:'include'
+    };
+    
+    fetch("http://localhost:8080/auth/logout", requestOptions)
+      .then(response => response.text())
+      .then(result => console.log(result))
+      .catch(error => console.log('error', error));
+  }
   return (
     <div>
       <button
@@ -84,7 +93,7 @@ export default function Dashboard() {
             </li> */}
             <li>
               <Link
-                href="/dashboard/questions"
+                href="/dashboard/respondents"
                 className="flex items-center p-2 text-sgray-300 rounded-lg  hover:bg-spurple-100 hover:text-spurple-300 group"
               >
                 <svg
@@ -149,7 +158,7 @@ export default function Dashboard() {
             </li>
             <li>
               <Link
-                href="/signin"
+                href="/login"
                 className="flex items-center p-2 text-sgray-300 rounded-lg  hover:bg-spurple-100 hover:text-spurple-300  group"
               >
                 <img
@@ -158,7 +167,7 @@ export default function Dashboard() {
                   src="https://img.icons8.com/6f6689/material-rounded/50/exit.png"
                   alt="mail"
                 />
-                <span className="flex-1 ms-3 text-lg font-semibold swhitespace-nowrap">
+                <span onClick={logout} className="flex-1 ms-3 text-lg font-semibold swhitespace-nowrap">
                   Sign out
                 </span>
               </Link>
