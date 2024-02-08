@@ -1,10 +1,14 @@
-"use client"
+"use client";
 import Link from "next/link";
 import Testcard from "@/app/components/Testcard";
 import Filtertests from "@/app/components/Filtertests";
 import { useEffect, useState } from "react";
+import Unauthorizederror from "@/app/components/Unauthorizederror";
+import Message from "@/app/components/Message";
 export default function Mytests() {
-  const [tests,setTests]=useState([]);
+  const [tests, setTests] = useState([]);
+  const [modalMessage,setModalMessage]=useState("");
+  const [errorMessage, setErrorMessage]=useState("");
   useEffect(() => {
     let myHeaders = new Headers();
 
@@ -12,71 +16,37 @@ export default function Mytests() {
       method: "GET",
       headers: myHeaders,
       redirect: "follow",
-      credentials:'include'
+      credentials: "include",
     };
 
     fetch(`${process.env.backendUrl}/test`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => setTests(JSON.parse(result)))
-      .catch((error) => alert("error: ", error));
+      .then(async (response) => await response.json())
+      .then((result) => {
+        if(Array.isArray(result)){
+          setTests(JSON.parse(result));
+        }
+        else if(result.status==401 || result.statusCode==401){
+          setModalMessage("Authorization error ! Login again.");
+        }
+        else if(result.message){
+          setErrorMessage(result.message);
+        }
+        else{
+          setErrorMessage(result.toString())
+        }
+      })
+      .catch((error) => setErrorMessage(error.toString()));
   }, [setTests]);
-  // const tests = [
-  //   {
-  //     id: 1,
-  //     status: true,
-  //     date: "December 18, 2023",
-  //     title: "Dummy test",
-  //     description: "this is the description of the dummy test",
-  //     avgScore: "-",
-  //     results: "0",
-  //     category: "Uncategorized",
-  //   },
-  //   {
-  //     id: 2,
-  //     status: true,
-  //     date: "December 18, 2023",
-  //     title: "Dummy test",
-  //     description: "this is the description of the dummy test",
-  //     avgScore: "-",
-  //     results: "0",
-  //     category: "Uncategorized",
-  //   },
-  //   {
-  //     id: 3,
-  //     status: true,
-  //     date: "December 18, 2023",
-  //     title: "Dummy test",
-  //     description: "this is the description of the dummy test",
-  //     avgScore: "-",
-  //     results: "0",
-  //     category: "Uncategorized",
-  //   },
-  //   {
-  //     id: 4,
-  //     status: true,
-  //     date: "December 18, 2023",
-  //     title: "Dummy test",
-  //     description: "this is the description of the dummy test",
-  //     avgScore: "-",
-  //     results: "0",
-  //     category: "Uncategorized",
-  //   },
-  //   {
-  //     id: 5,
-  //     status: true,
-  //     date: "December 18, 2023",
-  //     title: "Dummy test",
-  //     description: "this is the description of the dummy test",
-  //     avgScore: "-",
-  //     results: "0",
-  //     category: "Uncategorized",
-  //   },
-  // ];
   return (
     <>
+    <Unauthorizederror message={modalMessage} setMessage={setModalMessage}/>
+    <Message type={errorMessage?'Error':''} message={errorMessage}/>
       <div className="flex lg:flex-row md:flex-row lg:space-y-0 md:space-y-0 space-y-3 flex-col justify-between">
         <div className="text-lg font-semibold text-spurple-300">
-          My tests <span className="text-sgray-300">(6)</span>
+          My tests{" "}
+          <span className="text-sgray-300">
+            ({tests.length ? tests.length : <>0</>})
+          </span>
         </div>
         <Link href="/dashboard/generatetest">
           <button className="px-3 py-2 bg-spurple-300 text-swhite text-md font-medium rounded-lg">
@@ -113,21 +83,48 @@ export default function Mytests() {
         </div>
       </div> */}
       <Filtertests />
+        {tests.length > 0 ? (
       <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 mt-5">
-        {tests.map((test) => (
-          <Link href="/" key={test.id}>
-            <Testcard
-              status={test.status}
-              date={test.createdAt}
-              title={test.title}
-              description={test.description}
-              avgScore={test.avgScore}
-              results={test.results}
-              category={test.category}
-            />
-          </Link>
-        ))}
+          {tests.map((test) => (
+            <Link href="/" key={test.id}>
+              <Testcard
+                status={test.status}
+                date={test.createdAt}
+                title={test.title}
+                description={test.description}
+                avgScore={test.avgScore}
+                results={test.results}
+                category={test.category}
+              />
+            </Link>
+          ))}
       </div>
+        ) : (
+          <div className="h-screen -mt-40 flex items-center justify-center">
+            <div />
+            <div className="text-sgray-300">
+              No test created yet ? Create first
+              <Link href="/dashboard/generatetest">
+                <button
+                  className="text-sgray-300 hover:text-spurple-300 hover:font-medium underline mx-2"
+                  onClick={() => {
+                    setList({
+                      create: true,
+                      id: "",
+                      title: "",
+                      description: "",
+                      attempters: [],
+                    });
+                  }}
+                >
+                  test
+                </button>
+              </Link>{" "}
+              now !
+            </div>
+            <div />
+          </div>
+        )}
     </>
   );
 }

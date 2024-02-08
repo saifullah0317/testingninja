@@ -1,5 +1,68 @@
 import React from "react";
+import { useState, useRef } from "react";
+import Loadingicon from "./Loadingicon";
+import Message from "./Message";
+import Unauthorizederror from "./Unauthorizederror";
 export default function DefaultModal() {
+  const modalRef = useRef();
+  const [category, setCategory] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [messageType,setMessageType]=useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [modalMessage, setModalMessage] = useState("");
+  function postCategory() {
+    setLoading(true);
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    var raw = JSON.stringify({
+      category,
+    });
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+      credentials: "include",
+    };
+
+    fetch("http://localhost:8080/category", requestOptions)
+      .then(async (response) => await response.json())
+      .then((result) => {
+        if (result._id) {
+          setMessageType("Success");
+          setErrorMessage(`Category ${category} saved successfully.`);
+          setTimeout(() => {
+            setCategory("");
+            setMessageType("");
+            setErrorMessage("");
+            modalRef.current.click();
+          }, 1500);
+        } else if (result.status == 401 || result.statusCode == 401) {
+          modalRef.current.click();
+          setModalMessage("Authorization error ! Login again.");
+        } else if (result.message) {
+          setMessageType("Error");
+          setErrorMessage(result.message);
+        } else if (result.code) {
+          if (result.code === 11000) {
+            setMessageType("Error");
+            setErrorMessage("Category already exist !");
+          } else {
+            setMessageType("Error");
+            setErrorMessage(JSON.stringify(result));
+          }
+        } else {
+          setMessageType("Error");
+          setErrorMessage(result.toString());
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        setMessageType("Error");
+        setErrorMessage(error.toString());
+        setLoading(false);
+      });
+  }
   return (
     <div>
       {/* Modal start*/}
@@ -38,24 +101,47 @@ export default function DefaultModal() {
                 <span className="sr-only">Close modal</span>
               </button>
             </div>
-
-            <div className="p-4 md:p-5 space-y-4">
-              <input type="text" placeholder="Category name" />
+            <div className="px-4">
+              <input
+                type="text"
+                placeholder="Category name"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="rounded-lg w-full"
+              />
             </div>
 
-            <div className="flex items-center p-4 md:p-5 rounded-b">
+            <div className="flex justify-end space-x-5 items-center p-4 md:p-5 rounded-b">
               <button
+                onClick={postCategory}
                 className="text-swhite bg-spurple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
               >
-                Create
+                {loading ? (
+                  <div className="flex">
+                    <Loadingicon />
+                    <span>Saving...</span>
+                  </div>
+                ) : (
+                  <span>Create</span>
+                )}
+                <span></span>
               </button>
               <button
+                ref={modalRef}
                 data-modal-hide="default-modal"
                 className="ms-3 text-sgray-300 bg-white rounded-lg border border-sgray-300 text-sm font-medium px-5 py-2.5"
               >
                 Cancel
               </button>
             </div>
+            <Unauthorizederror
+              message={modalMessage}
+              setMessage={setModalMessage}
+            />
+            <Message
+              type={messageType}
+              message={errorMessage}
+            />
           </div>
         </div>
       </div>

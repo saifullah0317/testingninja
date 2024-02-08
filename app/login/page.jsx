@@ -13,7 +13,7 @@ export default function Page() {
       <div className="mt-24">
       <Message type={errorMessage?'Error':''} message={errorMessage}/>
       </div>
-      <div className="flex items-center justify-center mt-4 mb-12">
+      <div className="flex items-center justify-center mt-4">
       <Login setErrorMessage={setErrorMessage} firstTime={searchParams.get('first')?searchParams.get('first'):true}/>
       </div>
       {/* <Footer/> */}

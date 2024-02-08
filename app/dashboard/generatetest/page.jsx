@@ -1,14 +1,71 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import DefaultModal from "@/app/components/DefaultModal";
 import CustomQuestionModal from "@/app/components/CustomQuestionModal";
 import CustomMcqModal from "@/app/components/CustomMcqModal";
+import Message from "@/app/components/Message";
+import Unauthorizederror from "@/app/components/Unauthorizederror";
+import Deleteicon from "@/app/components/Deleteicon";
+import { TestContext } from "@/app/context/TestState";
+import Loadingicon from "@/app/components/Loadingicon";
 export default function Generatetest() {
+  const router=useRouter(); 
   const [desQuestions, setDesQuestions] = useState([]);
   const [mcqs, setMcqs] = useState([]);
   const [postTest, setPostTest] = useState(true);
   const [allowAttemption, setAllowAttemption] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [test, setTest] = useState(TestContext);
+  const [changed, setChanged] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [categorySelected, setCategorySelected] = useState("Uncategorized");
+  const [basicSettingMessageType, setBasicSettingMessageType] =
+    useState("Info");
+  const [basicSettingMessage, setBasicSettingMessage] = useState();
+  const [testTitle, setTestTitle] = useState("");
+  const [description, setDescription] = useState("");
+  function removeSpaces(text) {
+    return text.split(" ").join("");
+  }
+  useEffect(() => {
+    var requestOptions = {
+      method: "GET",
+      redirect: "follow",
+      credentials: "include",
+    };
+
+    fetch("http://localhost:8080/category", requestOptions)
+      .then(async (response) => await response.json())
+      .then((result) => {
+        if (Array.isArray(result)) {
+          setCategories(result);
+        } else if (result.status == 401 || result.statusCode == 401) {
+          setErrorMessage("Authorization error ! Login again.");
+          setTimeout(() => {
+            router.push("/login?first=false");
+          }, 2000);
+        } else if (result.code) {
+          setErrorMessage(JSON.stringify(result));
+        } else if (result.message) {
+          setErrorMessage(result.message);
+        } else {
+          setErrorMessage(result.toString());
+        }
+      })
+      .catch((error) => {
+        setErrorMessage(error.toString());
+      });
+  }, [
+    setCategories,
+    setModalMessage,
+    setBasicSettingMessageType,
+    setBasicSettingMessage,
+  ]);
   return (
     <>
       <DefaultModal />
@@ -17,126 +74,161 @@ export default function Generatetest() {
         setDesQuestions1={setDesQuestions}
       />
       <CustomMcqModal mcqs1={mcqs} setMcqs1={setMcqs} />
-      <div className="flex flex-col space-y-5">
+      <Unauthorizederror message={modalMessage} setMessage={setModalMessage} />
+      <div className="flex flex-col space-y-5 -mt-12">
+        <Message type={errorMessage ? "Error" : ""} message={errorMessage} />
+        <div className="flex justify-between items-center">
+          <div className="text-xl font-medium text-spurple-300 flex justify-start space-x-3 items-center">
+            <Link href="/dashboard/mytests">
+              <img
+                width="15"
+                height="15"
+                src="https://img.icons8.com/510173/ios-filled/50/back.png"
+                alt="back"
+              />
+            </Link>
+            <span>{!test.id ? "New" : "Edit"} Test</span>
+          </div>
+          <div className="flex items-center justify-end space-x-5">
+            <button
+              disabled={test.id & !changed}
+              className={
+                (!test.id ? "hidden" : "") +
+                " px-5 py-2 rounded-lg text-md font-medium " +
+                (test.id & !changed
+                  ? "bg-sgray-200 text-sgray-300"
+                  : "bg-spurple-300 text-swhite")
+              }
+              onClick={() => {
+                undoChanges();
+              }}
+            >
+              Undo changes
+            </button>
+            <button
+              disabled={test.id & !changed}
+              // className="px-5 py-2 rounded-lg bg-spurple-300 text-swhite text-md font-medium"
+              className={
+                "px-5 py-2 rounded-lg text-md font-medium " +
+                (test.id & !changed
+                  ? "bg-sgray-200 text-sgray-300"
+                  : "bg-spurple-300 text-swhite")
+              }
+              onClick={() => {
+                console.log("entering click event");
+                if (!test.id) {
+                  console.log("list.create: true");
+                  if (listname && emails) {
+                    submitList();
+                  } else {
+                    setErrorMessage(
+                      "Please fill all the required input fields."
+                    );
+                  }
+                } else {
+                  saveChanges();
+                }
+              }}
+            >
+              <div className={!test.id & loading ? "flex" : "hidden"}>
+                <Loadingicon />
+                <span>Saving...</span>
+              </div>
+              <span className={!test.id & !loading ? "" : "hidden"}>
+                Save test
+              </span>
+              <span className={!test.id ? "hidden" : ""}>Save changes</span>
+            </button>
+            <button
+              className={!test.id ? "hidden" : ""}
+              onClick={() => {
+                deleteList();
+              }}
+            >
+              <Deleteicon size={40} hover={true} />
+            </button>
+          </div>
+        </div>
         {/* basic settings */}
         <div>
-          <span>Basic settings</span>
-          <div className="bg-swhite rounded-lg p-5 w-full">
-            <div className="rounded-lg w-full bg-sblue-100 p-3">
+          <div className="bg-swhite rounded-lg p-5 w-full space-y-5">
+            <span className="text-md font-medium text-spurple-300">
+              BASIC SETTINGS
+            </span>
+            {/* <div className="rounded-lg w-full bg-sblue-100 p-3">
               <span className="text-sblue-200">
                 <span className="font-medium">Info!</span>
                 {` When you have a larger number of tests, assign them to specific categories, e.g. "Recruitment tests", etc. Using the category you'll be able to use filtering options in the My tests tab.`}
               </span>
+            </div> */}
+            {/* <Message type="Info" message={basicSettingMessage}/> */}
+            <div>
+              <input
+                type="text"
+                id="testtitle"
+                placeholder="Test title"
+                value={testTitle}
+                onChange={(e) => setTestTitle(e.target.value)}
+                className="w-full rounded-lg text-spurple-300"
+              />
             </div>
             <div>
-              <label htmlFor="testtitle">Title your test</label>
-              <input type="text" id="testtitle" />
+              <input
+                type="text"
+                id="testdescription"
+                placeholder="Description (optional)"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full rounded-lg text-spurple-300"
+              />
             </div>
-            <div>
-              <label htmlFor="testdescription">Description (optional)</label>
-              <input type="text" id="testdescription" />
-            </div>
-            <div className="flex justify-between items-end">
-              <div>
-                <label for="countries" className="mb-2 text-md">
-                  Category
-                </label>
-                <select
-                  id="countries"
-                  className="text-spurple-300 border-spurple-300 text-sm rounded-lg w-full p-2.5 "
+            <div className="space-y-3">
+              <span className="text-md text-sgray-300">Choose category</span>
+              <div className="flex justify-between items-start space-x-5">
+                <div className="w-full flex flex-col">
+                  <select
+                    id="countries"
+                    value={categorySelected}
+                    onChange={(e) => setCategorySelected(e.target.value)}
+                    className="text-spurple-300 border-spurple-300 text-md rounded-lg px-5 py-2"
+                  >
+                    {categories.map((category, index) => (
+                      <option value={category.category} key={index}>
+                        {category.category}
+                      </option>
+                    ))}
+                  </select>
+                  <span className="text-sm text-sgray-300">{`When you have a larger number of tests, assign them to specific categories, e.g. "Recruitment tests", etc. Using the category you'll be able to use filtering options in the My tests tab.`}</span>
+                </div>
+                <button
+                  data-modal-target="default-modal"
+                  data-modal-toggle="default-modal"
+                  className="text-spurple-300 border border-spurple-300 font-medium rounded-lg text-md px-5 py-2 text-center w-52"
                 >
-                  <option selected>Choose a country</option>
-                  <option value="US">United States</option>
-                  <option value="CA">Canada</option>
-                  <option value="FR">France</option>
-                  <option value="DE">Germany</option>
-                </select>
+                  Create category
+                </button>
               </div>
-
-              <button
-                data-modal-target="default-modal"
-                data-modal-toggle="default-modal"
-                className="text-spurple-300 border border-spurple-300 font-medium rounded-lg text-sm px-5 py-3 text-center"
-              >
-                Create category
-              </button>
-
-              {/* Modal start*/}
-              {/* <div
-            id="default-modal"
-            tabindex="-1"
-            aria-hidden="true"
-            className="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
-          >
-            <div className="relative p-4 w-full max-w-2xl max-h-full">
-              <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                <div className="flex items-center justify-between p-4 md:p-5 rounded-t ">
-                  <h3 className="text-xl font-semibold text-spurple-300 dark:text-white">
-                    Create new category
-                  </h3>
-                  <button
-                    type="button"
-                    className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center "
-                    data-modal-hide="default-modal"
-                  >
-                    <svg
-                      className="w-3 h-3"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 14 14"
-                    >
-                      <path
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                      />
-                    </svg>
-                    <span className="sr-only">Close modal</span>
-                  </button>
-                </div>
-
-                <div className="p-4 md:p-5 space-y-4">
-                  <input type="text" placeholder="Category name" />
-                </div>
-
-                <div className="flex items-center p-4 md:p-5 rounded-b">
-                  <button
-                    data-modal-hide="default-modal"
-                    className="text-swhite bg-spurple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-                  >
-                    Create
-                  </button>
-                  <button
-                    data-modal-hide="default-modal"
-                    className="ms-3 text-sgray-300 bg-white rounded-lg border border-sgray-300 text-sm font-medium px-5 py-2.5"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div> */}
-              {/* Modal end */}
             </div>
           </div>
         </div>
 
         {/* Questions management */}
         <div>
-          <span>Questions management</span>
           <div className="bg-swhite rounded-lg p-5 w-full flex flex-col space-y-5">
+            <span className="text-md font-medium text-spurple-300">
+              QUESTIONS MANAGEMENT
+            </span>
             <div className="flex justify-between items-center">
-              <span>Add questions to the test</span>
+              <span className="text-sgray-300 text-md">
+                Add questions to the test
+              </span>
               <div className="flex justify-end space-x-2">
                 {/* Add custom question dropdown */}
 
                 <button
                   id="dropdownHoverButton"
                   data-dropdown-toggle="dropdownHover"
-                  data-dropdown-trigger="hover"
+                  // data-dropdown-trigger="hover"
                   class="text-spurple-300 bg-swhite font-medium rounded-lg text-md px-5 py-3 text-center inline-flex items-center"
                   type="button"
                 >
@@ -189,7 +281,7 @@ export default function Generatetest() {
                   </ul>
                 </div>
 
-                <button className="bg-swhite border border-spurple-300 font-medium text-spurple-300 px-5 py-3 rounded-lg">
+                <button className="bg-swhite border border-spurple-300 font-medium text-spurple-300 px-5 py-2 rounded-lg">
                   Generate with AI
                 </button>
               </div>
@@ -241,8 +333,10 @@ export default function Generatetest() {
 
         {/* Toggle */}
         <div>
-          <span>Exam browser configuration</span>
           <div className="bg-swhite rounded-lg p-5 w-full flex flex-col space-y-5">
+            <span className="text-md font-medium text-spurple-300">
+              EXAM BROWSER CONFIGURATION
+            </span>
             <div className="flex justify-start space-x-5">
               <span>Post this test on Safe Exam Browser ?</span>
               <label class="relative inline-flex items-center me-5 cursor-pointer">
@@ -277,11 +371,10 @@ export default function Generatetest() {
                 >
                   Allow everyone with the test-key to attemp the test
                 </label>
-                <p
-                  id="helper-checkbox-text"
-                  class="text-sm text-sgray-300"
-                >
-                  {"Recommended: Don't allow everyone, rather enter list of emails of those who you want to attempt the test"}
+                <p id="helper-checkbox-text" class="text-sm text-sgray-300">
+                  {
+                    "Recommended: Don't allow everyone, rather enter list of emails of those who you want to attempt the test"
+                  }
                 </p>
               </div>
             </div>

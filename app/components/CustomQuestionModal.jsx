@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { useState } from "react";
+import Message from "./Message";
 export default function CustomQuestionModal({
   desQuestions1,
   setDesQuestions1,
@@ -8,18 +9,28 @@ export default function CustomQuestionModal({
   const [questionText, setQuestionText] = useState("");
   const [startRange, setStartRange] = useState();
   const [endRange, setEndRange] = useState();
+  const [errorMessage, setErrorMessage]=useState("");
   function exit() {
-    setDesQuestions1([
-      ...desQuestions1,
-      {
-        question: questionText,
-        startRange: startRange,
-        endRange: endRange,
-      },
-    ]);
-    setQuestionText("");
-    setStartRange();
-    setEndRange();
+    if ((startRange || endRange) && !(startRange && endRange)) {
+      setErrorMessage("Select both start and end range.");
+    }
+    else if(startRange<1 || endRange<1){
+      setErrorMessage("Number of words cannot be less than one.")
+    }
+    else{
+      setErrorMessage("");
+      setDesQuestions1([
+        ...desQuestions1,
+        {
+          question: questionText,
+          startRange: startRange,
+          endRange: endRange,
+        },
+      ]);
+      setQuestionText("");
+      setStartRange();
+      setEndRange();
+    }
   }
   return (
     <div>
@@ -66,9 +77,12 @@ export default function CustomQuestionModal({
                 placeholder="Write question to add"
                 value={questionText}
                 onChange={(e) => setQuestionText(e.target.value)}
+                className="rounded-lg text-spurple-300"
               />
               <div className="flex justify-between items-center">
-                <span>Add words range to answer (optional)</span>
+                <span className="text-sgray-300">
+                  Add words range to answer (optional)
+                </span>
                 <div className="flex space-x-2 items-center">
                   {/* <span>from</span> */}
                   <input
@@ -94,17 +108,21 @@ export default function CustomQuestionModal({
               </div>
             </div>
 
-            <div className="flex items-center p-4 md:p-5 rounded-b">
-              <button className="text-swhite bg-spurple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" onClick={exit}>
+            <div className="flex items-center p-4 md:p-5 rounded-b justify-end space-x-3">
+              <button
+                className="text-swhite bg-spurple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                onClick={exit}
+              >
                 Create
               </button>
               <button
                 data-modal-hide="modal1"
                 className="ms-3 text-sgray-300 bg-white rounded-lg border border-sgray-300 text-sm font-medium px-5 py-2.5"
               >
-                Cancel
+                Close
               </button>
             </div>
+            <Message type={errorMessage?'Error':''} message={errorMessage} />
           </div>
         </div>
       </div>

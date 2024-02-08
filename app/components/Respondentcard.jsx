@@ -5,6 +5,7 @@ import LinkIcon from "./LinkIcon";
 import { RespondentlistContext } from "../context/RespondentlistState";
 import Link from "next/link";
 export default function Respondentcard({
+  id,
   date,
   title,
   description,
@@ -36,12 +37,13 @@ export default function Respondentcard({
         <div className="flex flex-col space-y-5">
           <div className="flex items-center justify-between">
             <span className="text-md text-sgray-300 font-medium">
-              Created: {date ? convertDateFormat(date) : <></>}
+              Created: {date ? convertDateFormat(date) : <span>(not specified)</span>}
             </span>
             <Link href="/dashboard/respondentlist">
             <button onClick={()=>{
               setList({
                 create:false,
+                id,
                 title,
                 description,
                 attempters:attempters.map((attempter)=>attempter.email)
@@ -58,9 +60,19 @@ export default function Respondentcard({
           </span>
           <div>
             <span className="text-sgray-300">Respondents: </span>
-            <span className="text-spurple-300">
+            <Link href="/dashboard/respondentlist" className="text-spurple-300">
+              <button onClick={()=>{
+              setList({
+                create:false,
+                id,
+                title,
+                description,
+                attempters:attempters.map((attempter)=>attempter.email)
+              })
+              }}>
               {convertEmails(attempters)}
-            </span>
+              </button>
+            </Link>
           </div>
         </div>
       </div>

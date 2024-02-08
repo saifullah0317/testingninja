@@ -2,23 +2,22 @@ import React from "react";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-export default function Unauthorizederror({ showModal, setShowModal }) {
+export default function Unauthorizederror({ message, setMessage }) {
   const modalRef = useRef();
   const router = useRouter();
   const [modalElement, setModalElement] = useState();
 
   useEffect(() => {
     setModalElement(modalRef.current);
-    if (showModal) {
+    if (message) {
       modalElement.click();
-      setShowModal(false);
     }
     // Perform any actions you need with the DOM element
 
     // return () => {
     // Cleanup or perform actions when the component unmounts
     // };
-  }, [modalElement, setModalElement, modalRef, showModal, setShowModal]);
+  }, [modalElement, setModalElement, modalRef, message, setMessage]);
   return (
     <>
       <button
@@ -74,15 +73,16 @@ export default function Unauthorizederror({ showModal, setShowModal }) {
                 />
               </svg>
               <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-                Unauthorized error! Your login session expired
+                {message}
               </h3>
               <button
                 data-modal-hide="popup-modal"
                 type="button"
                 onClick={() => {
-                  console.log("before router: ",router);
+                  console.log("before router: ",message);
                   router.push("/login?first=false");
-                  console.log("after router: ",router);
+                  setMessage("");
+                  console.log("after router: ",message);
                 }}
                 class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2"
               >
