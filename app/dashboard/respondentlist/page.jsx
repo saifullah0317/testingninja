@@ -155,7 +155,7 @@ export default function Respondentlist() {
           },1000)
         }
         else if(resultData.statusCode==401 || resultData.status==401){
-          setModalMessage("Authorization error, login again!");
+          // setModalMessage("Authorization error, login again!");
           setMessageType("Error");
           setMessageText("Authorization error, login again!");
         }

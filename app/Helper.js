@@ -18,3 +18,23 @@ export function convertDateFormat(mongodbDateFormat) {
   let date = mongodbDateFormat.slice(8, 10);
   return month + " " + date + ", " + year;
 }
+
+export function convertEmails(respondentsList) {
+  let emails = [];
+  respondentsList.map((respondent) => {
+    emails.push(respondent.email);
+  });
+  let emailsString = "",
+    maxLength = 45,
+    index = 0;
+  while (index < emails.length) {
+    emailsString += '"' + emails[index] + '", ';
+    if (emailsString.length > maxLength) {
+      emailsString = emailsString.slice(0, maxLength);
+      break;
+    }
+    index++;
+  }
+  emailsString += "...";
+  return emailsString;
+}

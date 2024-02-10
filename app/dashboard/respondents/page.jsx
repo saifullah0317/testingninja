@@ -15,10 +15,8 @@ export default function Respondents() {
   const [errorMessage, setErrorMessage]=useState("")
   const { list, setList } = useContext(RespondentlistContext);
   useEffect(() => {
-    var myHeaders = new Headers();
     var requestOptions = {
       method: "GET",
-      headers: myHeaders,
       credentials: "include",
       redirect: "follow",
     };

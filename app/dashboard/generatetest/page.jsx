@@ -9,14 +9,23 @@ import CustomMcqModal from "@/app/components/CustomMcqModal";
 import Message from "@/app/components/Message";
 import Unauthorizederror from "@/app/components/Unauthorizederror";
 import Deleteicon from "@/app/components/Deleteicon";
+import Datepicker from "@/app/components/Datepicker";
 import { TestContext } from "@/app/context/TestState";
 import Loadingicon from "@/app/components/Loadingicon";
+import { convertEmails } from "@/app/Helper";
+import TimePicker from "@/app/components/TimePicker";
 export default function Generatetest() {
-  const router=useRouter(); 
+  const router = useRouter();
   const [desQuestions, setDesQuestions] = useState([]);
   const [mcqs, setMcqs] = useState([]);
   const [postTest, setPostTest] = useState(true);
   const [allowAttemption, setAllowAttemption] = useState(false);
+  const [activateTest, setActivateTest] = useState(true);
+  const [deactivateTest, setDeactivateTest] = useState(true);
+  const [activationDate, setActivationDate] = useState();
+  const [deactivationDate, setDeactivationDate] = useState();
+  const [activationTime, setActivationTime] = useState();
+  const [deactivationTime, setDeactivationTime] = useState();
   const [modalMessage, setModalMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [test, setTest] = useState(TestContext);
@@ -24,11 +33,17 @@ export default function Generatetest() {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
   const [categorySelected, setCategorySelected] = useState("Uncategorized");
-  const [basicSettingMessageType, setBasicSettingMessageType] =
-    useState("Info");
-  const [basicSettingMessage, setBasicSettingMessage] = useState();
   const [testTitle, setTestTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [respondentlists, setRespondentlists] = useState([]);
+  const [selectedRespondentlists, setSelectedRespondentlists] = useState([]);
+  const [testInstructions, setTestInstructions] = useState([
+    "Once you start the exam, you cannot close it without submitting it.",
+    "When you start exam, you wll enter full-screen mode. If you escape this mode your exam will be automatically submitted.",
+    "You cannot select, copy or cut any text in the exam.",
+    "You cannot paste anything in any textfield.",
+  ]);
+  const [singleInstruction, setSingleInstruction] = useState("");
   function removeSpaces(text) {
     return text.split(" ").join("");
   }
@@ -46,9 +61,9 @@ export default function Generatetest() {
           setCategories(result);
         } else if (result.status == 401 || result.statusCode == 401) {
           setErrorMessage("Authorization error ! Login again.");
-          setTimeout(() => {
-            router.push("/login?first=false");
-          }, 2000);
+          // setTimeout(() => {
+          //   router.push("/login?first=false");
+          // }, 2000);
         } else if (result.code) {
           setErrorMessage(JSON.stringify(result));
         } else if (result.message) {
@@ -60,14 +75,36 @@ export default function Generatetest() {
       .catch((error) => {
         setErrorMessage(error.toString());
       });
+
+    fetch("http://localhost:8080/attempterlist", requestOptions)
+      .then(async (response) => {
+        const data = await response.json();
+        if (Array.isArray(data)) {
+          setRespondentlists(data);
+        } else if (data.message && !errorMessage) {
+          setErrorMessage(data.message);
+        } else if (data.code && !errorMessage) {
+          setErrorMessage(JSON.stringify(data));
+        } else if (!errorMessage) {
+          setErrorMessage(data.toString());
+        }
+      })
+      .catch((error) => {
+        if (!errorMessage) {
+          setErrorMessage(error.toString());
+        }
+      });
   }, [
     setCategories,
     setModalMessage,
-    setBasicSettingMessageType,
-    setBasicSettingMessage,
+    setErrorMessage,
+    router,
+    setRespondentlists,
+    errorMessage,
   ]);
   return (
     <>
+      {/* <ErrorModal className={modalMessage?"":'hidden'}/> */}
       <DefaultModal />
       <CustomQuestionModal
         desQuestions1={desQuestions}
@@ -76,7 +113,9 @@ export default function Generatetest() {
       <CustomMcqModal mcqs1={mcqs} setMcqs1={setMcqs} />
       <Unauthorizederror message={modalMessage} setMessage={setModalMessage} />
       <div className="flex flex-col space-y-5 -mt-12">
-        <Message type={errorMessage ? "Error" : ""} message={errorMessage} />
+        <div className="mt-4">
+          <Message type={errorMessage ? "Error" : ""} message={errorMessage} />
+        </div>
         <div className="flex justify-between items-center">
           <div className="text-xl font-medium text-spurple-300 flex justify-start space-x-3 items-center">
             <Link href="/dashboard/mytests">
@@ -115,9 +154,7 @@ export default function Generatetest() {
                   : "bg-spurple-300 text-swhite")
               }
               onClick={() => {
-                console.log("entering click event");
                 if (!test.id) {
-                  console.log("list.create: true");
                   if (listname && emails) {
                     submitList();
                   } else {
@@ -155,13 +192,6 @@ export default function Generatetest() {
             <span className="text-md font-medium text-spurple-300">
               BASIC SETTINGS
             </span>
-            {/* <div className="rounded-lg w-full bg-sblue-100 p-3">
-              <span className="text-sblue-200">
-                <span className="font-medium">Info!</span>
-                {` When you have a larger number of tests, assign them to specific categories, e.g. "Recruitment tests", etc. Using the category you'll be able to use filtering options in the My tests tab.`}
-              </span>
-            </div> */}
-            {/* <Message type="Info" message={basicSettingMessage}/> */}
             <div>
               <input
                 type="text"
@@ -333,12 +363,14 @@ export default function Generatetest() {
 
         {/* Toggle */}
         <div>
-          <div className="bg-swhite rounded-lg p-5 w-full flex flex-col space-y-5">
+          <div className="bg-swhite rounded-lg p-5 w-full flex flex-col space-y-8">
             <span className="text-md font-medium text-spurple-300">
               EXAM BROWSER CONFIGURATION
             </span>
-            <div className="flex justify-start space-x-5">
-              <span>Post this test on Safe Exam Browser ?</span>
+            {/* <div className="flex justify-start space-x-5">
+              <span className="text-spurple-300">
+                Post this test on Safe Exam Browser ?
+              </span>
               <label class="relative inline-flex items-center me-5 cursor-pointer">
                 <input
                   type="checkbox"
@@ -352,8 +384,29 @@ export default function Generatetest() {
                   {postTest ? "Yes" : "No"}
                 </span>
               </label>
+            </div> */}
+            <div className="flex">
+              <div className="flex items-center h-6">
+                <input
+                  type="checkbox"
+                  value=""
+                  className="w-4 h-4 text-spurple-300 border-spurple-300 rounded"
+                  checked={postTest}
+                  onChange={() => setPostTest(!postTest)}
+                />
+              </div>
+              <div className="ms-2">
+                <label className="text-md text-spurple-300 dark:text-gray-300">
+                  Post this test on Safe Exam Browser ?
+                </label>
+                {/* <p id="helper-checkbox-text" className="text-sm text-sgray-300">
+                  {
+                    "An active state of test indicates that it's availabe to attempt for the respondents. You can manually activate test afterwards."
+                  }
+                </p> */}
+              </div>
             </div>
-            <div class="flex">
+            <div className={postTest ? "flex" : "hidden"}>
               <div className="flex items-center h-6">
                 <input
                   id="allowAttemption"
@@ -376,6 +429,235 @@ export default function Generatetest() {
                     "Recommended: Don't allow everyone, rather enter list of emails of those who you want to attempt the test"
                   }
                 </p>
+              </div>
+            </div>
+            <div
+              className={
+                postTest && !allowAttemption
+                  ? "flex justify-start space-x-5"
+                  : "hidden"
+              }
+            >
+              <div className="w-full">
+                <button
+                  id="dropdownHelperButton"
+                  data-dropdown-toggle="dropdownHelper"
+                  className="text-spurple-300 border border-spurple-300 font-medium rounded-lg text-md px-5 py-2.5 text-center inline-flex w-full items-center justify-between"
+                  type="button"
+                >
+                  Select respondents lists{" "}
+                  <svg
+                    class="w-2.5 h-2.5 ms-3"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 10 6"
+                  >
+                    <path
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="m1 1 4 4 4-4"
+                    />
+                  </svg>
+                </button>
+
+                <div
+                  id="dropdownHelper"
+                  class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-2xl w-1/2"
+                >
+                  {respondentlists ? (
+                    <ul
+                      class="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200"
+                      aria-labelledby="dropdownHelperButton"
+                    >
+                      {respondentlists.map((respondentlist, index) => (
+                        <li key={index}>
+                          <div class="flex p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                            <div class="flex items-center h-5">
+                              <input
+                                id="helper-checkbox-1"
+                                aria-describedby="helper-checkbox-text-1"
+                                type="checkbox"
+                                checked={selectedRespondentlists.includes(
+                                  respondentlist
+                                )}
+                                onChange={() => {
+                                  if (
+                                    selectedRespondentlists.includes(
+                                      respondentlist
+                                    )
+                                  ) {
+                                    setSelectedRespondentlists(
+                                      selectedRespondentlists.filter(
+                                        (item) =>
+                                          item._id !== respondentlist._id
+                                      )
+                                    );
+                                  } else {
+                                    setSelectedRespondentlists([
+                                      ...selectedRespondentlists,
+                                      respondentlist,
+                                    ]);
+                                  }
+                                }}
+                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+                              />
+                            </div>
+                            <div class="ms-2 text-sm">
+                              <label
+                                for="helper-checkbox-1"
+                                class="font-medium text-gray-900 dark:text-gray-300"
+                              >
+                                <div>{respondentlist.title}</div>
+                                <p
+                                  id="helper-checkbox-text-1"
+                                  class="text-xs font-normal text-gray-500 dark:text-gray-300"
+                                >
+                                  {convertEmails(respondentlist.attempters)}
+                                </p>
+                              </label>
+                            </div>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <span className="text-sgray-300 p-5 text-md font-medium">
+                      No list added yet, create list on respondents page.
+                    </span>
+                  )}
+                </div>
+              </div>
+              <Link
+                href="/dashboard/respondents"
+                className="border border-spurple-300 px-5 py-2 text-spurple-300 text-md rounded-lg w-64 font-medium"
+              >
+                Manage respondents
+              </Link>
+            </div>
+            <div className={postTest ? "flex" : "hidden"}>
+              <div className="flex items-center h-6">
+                <input
+                  id="activateTest"
+                  type="checkbox"
+                  value=""
+                  className="w-4 h-4 text-spurple-300 border-spurple-300 rounded"
+                  checked={activateTest}
+                  onChange={() => setActivateTest(!activateTest)}
+                />
+              </div>
+              <div className="ms-2">
+                <label
+                  htmlFor="activateTest"
+                  className="text-md text-spurple-300 dark:text-gray-300"
+                >
+                  Activate test on the time of creating.
+                </label>
+                <p id="helper-checkbox-text" className="text-sm text-sgray-300">
+                  {
+                    "An active state of test indicates that it's availabe to attempt for the respondents. You can manually activate test afterwards."
+                  }
+                </p>
+              </div>
+            </div>
+            <div
+              className={
+                activateTest
+                  ? "hidden"
+                  : "flex justify-between items-center space-x-5"
+              }
+            >
+              <div className="flex justify-start space-x-5 items-center">
+                <span className="text-sgray-300">Test activation date</span>
+                <Datepicker date={activationDate} setDate={setActivationDate} />
+              </div>
+              <div className="flex justify-end space-x-5 items-center">
+                <span className="text-sgray-300">Test activation time</span>
+                <TimePicker setTime={setActivationTime} />
+              </div>
+            </div>
+            <div
+              className={
+                postTest && ((activationDate && activationTime) || activateTest)
+                  ? "flex"
+                  : "hidden"
+              }
+            >
+              <div className="flex items-center h-6">
+                <input
+                  type="checkbox"
+                  value=""
+                  className="w-4 h-4 text-spurple-300 border-spurple-300 rounded"
+                  checked={deactivateTest}
+                  onChange={() => setDeactivateTest(!deactivateTest)}
+                />
+              </div>
+              <div className="ms-2">
+                <label className="text-md text-spurple-300 dark:text-gray-300">
+                  Specify deactivation date and time.
+                </label>
+                <p id="helper-checkbox-text" className="text-sm text-sgray-300">
+                  {
+                    "Otherwise you can also deactivate test manually on the test page anytime."
+                  }
+                </p>
+              </div>
+            </div>
+            <div
+              className={
+                postTest &&
+                deactivateTest &&
+                ((activationDate && activationTime) || activateTest)
+                  ? "flex justify-between items-center space-x-5"
+                  : "hidden"
+              }
+            >
+              <div className="flex justify-start space-x-5 items-center">
+                <span className="text-sgray-300">Test deactivation date</span>
+                <Datepicker
+                  date={deactivationDate}
+                  setDate={setDeactivationDate}
+                />
+              </div>
+              <div className="flex justify-end space-x-5 items-center">
+                <span className="text-sgray-300">Test deactivation time</span>
+                <TimePicker setTimes={setDeactivationTime} />
+              </div>
+            </div>
+
+            <div className="flex flex-col space-y-5">
+              <span className="text-md text-sgray-300">Add instruction that will appear to respondent before attempting exam (optional)</span>
+              <div className="flex justify-start">
+                <input
+                  type="text"
+                  value={singleInstruction}
+                  onChange={(e) => setSingleInstruction(e.target.value)}
+                  placeholder="Enter one instruction for attempter here"
+                  className="w-full rounded-l-lg border border-sgray-300 text-spurple-300"
+                />
+                <button
+                  onClick={() => {
+                    setTestInstructions([
+                      ...testInstructions,
+                      singleInstruction,
+                    ]);
+                  }}
+                  className="px-5 py-2 border border-spurple-300 rounded-r-lg text-md font-medium text-spurple-300 hover:bg-spurple-300 hover:text-swhite"
+                >
+                  Add
+                </button>
+              </div>
+              <div>
+              <h2 className="mb-2 text-lg font-semibold text-spurple-300">
+                Exam instructions:
+              </h2>
+              <ul className="w-full space-y-1 text-spurple-300 list-disc list-inside">
+                {testInstructions.map((instruction, index) => (
+                  <li key={index}>{instruction}</li>
+                ))}
+              </ul>
               </div>
             </div>
           </div>

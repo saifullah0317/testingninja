@@ -1,27 +1,35 @@
 "use client";
 import React from "react";
 import { useState } from "react";
-export default function CustomMcqModal({mcqs1,setMcqs1}) {
-  const [showTextfield, setShowTextfield] = useState(false);
-  const [options,setOptions]=useState([]);
-  const [questionText,setQuestionText]=useState("");
-  const [optionText,setOptionText]=useState("");
-  const [allowMultChoice,setAllowMultChoice]=useState(false)
-  function addOption(){
-    setOptions([...options,optionText]);
+import Message from "./Message";
+export default function CustomMcqModal({ mcqs1, setMcqs1 }) {
+  const [options, setOptions] = useState([]);
+  const [questionText, setQuestionText] = useState("");
+  const [optionText, setOptionText] = useState("");
+  const [allowMultChoice, setAllowMultChoice] = useState(false);
+  const [errorMessage, setErrorMessage]=useState("");
+  function addOption() {
+    setOptions([...options, optionText]);
     setOptionText("");
-    setShowTextfield(false);
   }
-  function exit(){
-    setMcqs1([...mcqs1,{
-        question:questionText,
-        allowMultChoice:allowMultChoice,
-        options:options
-    }])
-    setOptionText("");
-    setQuestionText("");
-    setOptions([]);
-    setShowTextfield(false);
+  function exit() {
+    if(!questionText || options.length<2){
+      setErrorMessage("Please fill the required fields (question and atleast 2 options)");
+    }
+    else{
+      setErrorMessage("");
+      setMcqs1([
+        ...mcqs1,
+        {
+          question: questionText,
+          allowMultChoice: allowMultChoice,
+          options: options,
+        },
+      ]);
+      setOptionText("");
+      setQuestionText("");
+      setOptions([]);
+    }
   }
   return (
     <div>
@@ -62,68 +70,74 @@ export default function CustomMcqModal({mcqs1,setMcqs1}) {
               </button>
             </div>
 
-            <div className="p-4 md:p-5 flex flex-col space-y-4">
-              <input type="text" placeholder="Write question to add" 
-                  value={questionText}
-                  onChange={(e)=>setQuestionText(e.target.value)} />
-              <div class="flex items-center">
+            <div className="p-4 md:p-5 flex flex-col space-y-6">
+              <input
+                type="text"
+                placeholder="Write question to add"
+                value={questionText}
+                onChange={(e) => setQuestionText(e.target.value)}
+                className="rounded-lg text-spurple-300"
+              />
+              <div class="flex items-start">
                 <input
-                  id="allowMultChoice"
                   type="checkbox"
                   value=""
-                  class="w-4 h-4 text-spurple-300 border-spurple-300 rounded"
+                  class="w-4 h-4 text-spurple-300 border-spurple-300 rounded mt-1"
                   checked={allowMultChoice}
-                  onChange={()=>setAllowMultChoice(!allowMultChoice)}
+                  onChange={() => setAllowMultChoice(!allowMultChoice)}
                 />
-                <label
-                  for="allowMultChoice"
-                  class="ms-2 text-md text-spurple-300 dark:text-gray-300"
-                >
-                  Allow selecting more than one options
-                </label>
-              </div>
-              <div className={(options.length>0?'':'hidden')+" text-md text-spurple-300 font-medium"}>
-                <span>Options: </span>
-                {
-                    options.map((option,index)=>(
-                        <span key={index}>{(index>0?', ':'')+option}</span>
-                    ))
-                }
-              </div>
-              <div className="flex justify-start space-x-2 items-center">
-                <span className="text-spurple-300">Add option</span>
-                <button className="px-3 py-1 text-spurple-300 rounded-lg bg-swhite border border-spurple-300 hover:bg-spurple-300 hover:text-swhite" onClick={()=>setShowTextfield(true)}>
-                  Add
-                </button>
+                <div className="flex flex-col items-start justify-start">
+                  <span class="ms-2 text-md text-spurple-300 dark:text-gray-300">
+                    Allow selecting more than one options
+                  </span>
+                  <span className="text-sm text-sgray-300">
+                    Check it if more than one option could be the answer.
+                  </span>
+                </div>
               </div>
               <div
                 className={
-                  (showTextfield ? "" : "hidden") +
-                  " flex justify-start space-x-2 items-center"
+                  (options.length > 0 ? "" : "hidden") +
+                  " text-md text-spurple-300 font-medium"
                 }
               >
-                <input type="text" placeholder="Enter option" value={optionText} onChange={(e)=>setOptionText(e.target.value)} />
-                <button className="px-3 py-1 text-spurple-300 rounded-lg bg-swhite border border-spurple-300 hover:bg-spurple-300 hover:text-swhite" onClick={addOption}>
+                <span>Options: </span>
+                {options.map((option, index) => (
+                  <span key={index}>{(index > 0 ? ", " : "") + option}</span>
+                ))}
+              </div>
+              <div className=" flex justify-start">
+                <input
+                  type="text"
+                  placeholder="Enter option"
+                  value={optionText}
+                  onChange={(e) => setOptionText(e.target.value)}
+                  className="rounded-l-lg"
+                />
+                <button
+                  className="px-3 py-1 text-spurple-300 rounded-r-lg bg-swhite border border-spurple-300 hover:bg-spurple-300 hover:text-swhite"
+                  onClick={addOption}
+                >
                   Add
                 </button>
               </div>
-              {/* <input type="text" placeholder="First option" />
-              <input type="text" placeholder="Second option" />
-              <input type="text" placeholder="Third option" />
-              <input type="text" placeholder="Fourth option" /> */}
             </div>
 
-            <div className="flex items-center p-4 md:p-5 rounded-b">
-              <button className="text-swhite bg-spurple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" onClick={exit}>
+            <div className="flex items-center pr-4 pb-4 rounded-b justify-end">
+              <button
+                className="text-swhite bg-spurple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                onClick={exit}
+              >
                 Create
               </button>
               <button
                 data-modal-hide="modal2"
                 className="ms-3 text-sgray-300 bg-white rounded-lg border border-sgray-300 text-sm font-medium px-5 py-2.5"
               >
-                Cancel
+                Close
               </button>
             </div>
+            <Message type={errorMessage?'Error':''} message={errorMessage}/>
           </div>
         </div>
       </div>

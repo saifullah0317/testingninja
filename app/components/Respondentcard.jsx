@@ -4,6 +4,7 @@ import Deleteicon from "./Deleteicon";
 import LinkIcon from "./LinkIcon";
 import { RespondentlistContext } from "../context/RespondentlistState";
 import Link from "next/link";
+import { convertEmails } from "../Helper";
 export default function Respondentcard({
   id,
   date,
@@ -12,25 +13,6 @@ export default function Respondentcard({
   attempters,
 }) {
   const {list,setList}=useContext(RespondentlistContext);
-  function convertEmails(respondentsList) {
-    let emails = [];
-    respondentsList.map((respondent) => {
-      emails.push(respondent.email);
-    });
-    let emailsString = "",
-      maxLength = 45,
-      index = 0;
-    while (index < emails.length) {
-      emailsString += '"' + emails[index] + '", ';
-      if (emailsString.length > maxLength) {
-        emailsString = emailsString.slice(0, maxLength);
-        break;
-      }
-      index++;
-    }
-    emailsString += "...";
-    return emailsString;
-  }
   return (
     <>
       <div className="bg-swhite hover:shadow-lg px-5 py-5 rounded-lg">

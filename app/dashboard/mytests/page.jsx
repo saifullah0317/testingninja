@@ -10,11 +10,8 @@ export default function Mytests() {
   const [modalMessage,setModalMessage]=useState("");
   const [errorMessage, setErrorMessage]=useState("");
   useEffect(() => {
-    let myHeaders = new Headers();
-
     let requestOptions = {
       method: "GET",
-      headers: myHeaders,
       redirect: "follow",
       credentials: "include",
     };
@@ -23,7 +20,7 @@ export default function Mytests() {
       .then(async (response) => await response.json())
       .then((result) => {
         if(Array.isArray(result)){
-          setTests(JSON.parse(result));
+          setTests(result);
         }
         else if(result.status==401 || result.statusCode==401){
           setModalMessage("Authorization error ! Login again.");
@@ -40,7 +37,7 @@ export default function Mytests() {
   return (
     <>
     <Unauthorizederror message={modalMessage} setMessage={setModalMessage}/>
-    <Message type={errorMessage?'Error':''} message={errorMessage}/>
+    <div className="-mt-4 mb-2"><Message type={errorMessage?'Error':''} message={errorMessage}/></div>
       <div className="flex lg:flex-row md:flex-row lg:space-y-0 md:space-y-0 space-y-3 flex-col justify-between">
         <div className="text-lg font-semibold text-spurple-300">
           My tests{" "}

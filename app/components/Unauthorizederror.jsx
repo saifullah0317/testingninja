@@ -5,19 +5,23 @@ import Link from "next/link";
 export default function Unauthorizederror({ message, setMessage }) {
   const modalRef = useRef();
   const router = useRouter();
-  const [modalElement, setModalElement] = useState();
+  const [modalElement, setModalElement] = useState(modalRef.current);
 
   useEffect(() => {
     setModalElement(modalRef.current);
-    if (message) {
-      modalElement.click();
-    }
+    setTimeout(() => {
+      if (message) {
+        console.log("message: ",message);
+        console.log("modalElement: ", modalElement);
+        modalElement.click();
+      }
+    }, 100);
     // Perform any actions you need with the DOM element
 
     // return () => {
     // Cleanup or perform actions when the component unmounts
     // };
-  }, [modalElement, setModalElement, modalRef, message, setMessage]);
+  }, [modalElement, setModalElement, modalRef, message]);
   return (
     <>
       <button

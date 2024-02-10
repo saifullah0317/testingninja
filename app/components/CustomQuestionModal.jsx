@@ -11,7 +11,10 @@ export default function CustomQuestionModal({
   const [endRange, setEndRange] = useState();
   const [errorMessage, setErrorMessage]=useState("");
   function exit() {
-    if ((startRange || endRange) && !(startRange && endRange)) {
+    if(!questionText){
+      setErrorMessage("Please enter question.")
+    }
+    else if (((startRange || endRange) && !(startRange && endRange))) {
       setErrorMessage("Select both start and end range.");
     }
     else if(startRange<1 || endRange<1){
