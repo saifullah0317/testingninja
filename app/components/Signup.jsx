@@ -2,11 +2,26 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-export default function Signup({setErrorMessage}) {
-  const router=useRouter();
+import { generateRandomCode } from "../Helper";
+import { sendMail } from "../Helper";
+export default function Signup({ setErrorMessage }) {
+  const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [activate, setActivate] = useState(false);
+  const [verificationCode, setVerificationCode] = useState("");
+  const [actualCode,setActualCode]=useState("");
+  function generateRandomString(length) {
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let result = "";
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+  }
   function createAccount() {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -14,6 +29,7 @@ export default function Signup({setErrorMessage}) {
       username: name,
       email,
       password,
+      verificationCode: generateRandomString(6),
     });
 
     var requestOptions = {
@@ -21,30 +37,39 @@ export default function Signup({setErrorMessage}) {
       headers: myHeaders,
       body: raw,
       redirect: "follow",
-      credentials:'include'
+      credentials: "include",
     };
 
     fetch("http://localhost:8080/auth/signup", requestOptions)
-      .then((response) => response.text())
+      .then(async (response) => await response.json())
       .then((result) => {
-        if(JSON.parse(result).token){
-          router.push('/dashboard/mytests')
-        }
-        else if(JSON.parse(result).code==11000){
-          setErrorMessage("User with this mail already exist.")
-        }
-        else if(JSON.parse(result).statusCode>=400){
-          setErrorMessage("Invalid email")
-        }
-        else{
-          setErrorMessage(JSON.stringify(result));
+        if (result.token) {
+          setActualCode(result.user.verificationCode);
+          setActivate(true);
+        } else if (result.response.code == 11000) {
+          setErrorMessage("User with this mail already exist.");
+        } else if (result.statusCode >= 400 || result.status >= 400) {
+          setErrorMessage("Invalid email");
+        } else {
+          setErrorMessage(
+            JSON.stringify(result) ? JSON.stringify(result) : result.toString()
+          );
         }
       })
       .catch((error) => {
-        console.log("error from signup catch: ",error);
-        setErrorMessage(JSON.stringify(error));
+        console.log("error from signup catch: ", error);
+        setErrorMessage(error.toString());
       });
   }
+
+  function handleSignUp() {
+    if (activate && (verificationCode == actualCode)) {
+      router.push("/dashboard/mytests");
+    } else if (!activate) {
+      createAccount();
+    }
+  }
+
   return (
     <div className="w-96 border-swhite shadow-2xl rounded-lg py-10 px-10 flex flex-col space-y-6">
       <div className="flex flex-col mb-6">
@@ -52,39 +77,71 @@ export default function Signup({setErrorMessage}) {
           testingninja
         </span>
         <span className="text-lg text mt-3 text-center text-spurple-300">
-          Register a New Account
+          {activate ? "Verify Your Account" : "Register a New Account"}
         </span>
       </div>
+      <span
+        className={(activate&&(!verificationCode)) ? "text-md text-sgray-300" : "hidden"}
+      >{`Verification link is sent to ${email} to verify that it's your email address.`}</span>
+      <span
+        className={(activate&&verificationCode&&(verificationCode!=actualCode)) ? "text-md text-red-800" : "hidden"}
+      >Invalid code, try again !</span>
       <input
         type="text"
-        className="rounded-lg bg-sgray text-spurple-300 font-medium"
+        className={
+          activate
+            ? "rounded-lg bg-sgray text-spurple-300 font-medium"
+            : "hidden"
+        }
+        placeholder="Verification Code"
+        value={verificationCode}
+        onChange={(e) => setVerificationCode(e.target.value)}
+      />
+      <input
+        type="text"
+        className={
+          activate
+            ? "hidden"
+            : "rounded-lg bg-sgray text-spurple-300 font-medium"
+        }
         placeholder="Your Fullname"
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
       <input
         type="email"
-        className="rounded-lg bg-sgray text-spurple-300 font-medium"
-        placeholder="Work email address"
+        className={
+          activate
+            ? "hidden"
+            : "rounded-lg bg-sgray text-spurple-300 font-medium"
+        }
+        placeholder="Your email address"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
       <input
         type="password"
-        className="rounded-lg bg-sgray text-spurple-300 font-medium"
+        className={
+          activate
+            ? "hidden"
+            : "rounded-lg bg-sgray text-spurple-300 font-medium"
+        }
         placeholder="Create new password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
       <div className="h-12" />
       <div className="flex flex-row justify-between items-center">
-        <Link href="/login">
+        <Link href="/login" className={activate? "hidden" : ""}>
           <span className="text-lg font-semibold text-spurple-300">
             Login instead
           </span>
         </Link>
-        <button className="bg-spurple-300 rounded-lg text-swhite text-lg font-semibold py-2 px-5" onClick={createAccount}>
-          Sign up
+        <button
+          className="bg-spurple-300 rounded-lg text-swhite text-lg font-semibold py-2 px-5"
+          onClick={handleSignUp}
+        >
+          {activate?'Verify':'Sign up'}
         </button>
       </div>
     </div>

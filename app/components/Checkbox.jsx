@@ -8,7 +8,6 @@ import React from "react";
 //   }
 
 export default function Checkbox(props) {
-    console.log("props: ",props);
   return (
     <div className="w-full flex gap-2">
       <input
