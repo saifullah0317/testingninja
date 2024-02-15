@@ -389,7 +389,7 @@ export default function Generatetest() {
                   key={index}
                   className="px-5 py-3 border-spurple-300 text-md font-medium text-spurple-300"
                 >
-                  <span>Question: {question.question}</span>
+                  <span>Question {index+1}: {question.question}</span>
                 </div>
               ))}
             </div>
