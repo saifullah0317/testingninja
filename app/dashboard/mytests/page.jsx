@@ -7,8 +7,8 @@ import Unauthorizederror from "@/app/components/Unauthorizederror";
 import Message from "@/app/components/Message";
 export default function Mytests() {
   const [tests, setTests] = useState([]);
-  const [modalMessage,setModalMessage]=useState("");
-  const [errorMessage, setErrorMessage]=useState("");
+  const [modalMessage, setModalMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   useEffect(() => {
     let requestOptions = {
       method: "GET",
@@ -16,28 +16,34 @@ export default function Mytests() {
       credentials: "include",
     };
 
-    fetch(`${process.env.backendUrl}/test`, requestOptions)
-      .then(async (response) => await response.json())
-      .then((result) => {
-        if(Array.isArray(result)){
+    fetch('http://localhost:8080/test', requestOptions)
+      .then(async (response) => {
+        const result=await response.json();
+        if (Array.isArray(result)) {
           setTests(result);
-        }
-        else if(result.status==401 || result.statusCode==401){
+        } else if (result.status == 401 || result.statusCode == 401) {
           setModalMessage("Authorization error ! Login again.");
-        }
-        else if(result.message){
+        } else if (result.message) {
           setErrorMessage(result.message);
-        }
-        else{
-          setErrorMessage(result.toString())
+        } else {
+          setErrorMessage(
+            JSON.stringify(result) ? JSON.stringify(result) : result.toString()
+          );
         }
       })
-      .catch((error) => setErrorMessage(error.toString()));
+      .catch((error) => {
+        console.log("error from catch of mytests: ",error)
+        setErrorMessage(
+          JSON.stringify(error) ? JSON.stringify(error) : error.toString()
+        );
+      });
   }, [setTests]);
   return (
     <>
-    <Unauthorizederror message={modalMessage} setMessage={setModalMessage}/>
-    <div className="-mt-4 mb-2"><Message type={errorMessage?'Error':''} message={errorMessage}/></div>
+      <Unauthorizederror message={modalMessage} setMessage={setModalMessage} />
+      <div className="-mt-4 mb-2">
+        <Message type={errorMessage ? "Error" : ""} message={errorMessage} />
+      </div>
       <div className="flex lg:flex-row md:flex-row lg:space-y-0 md:space-y-0 space-y-3 flex-col justify-between">
         <div className="text-lg font-semibold text-spurple-300">
           My tests{" "}
@@ -80,8 +86,8 @@ export default function Mytests() {
         </div>
       </div> */}
       <Filtertests />
-        {tests.length > 0 ? (
-      <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 mt-5">
+      {tests.length > 0 ? (
+        <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 mt-5">
           {tests.map((test) => (
             <Link href="/" key={test.id}>
               <Testcard
@@ -95,33 +101,33 @@ export default function Mytests() {
               />
             </Link>
           ))}
-      </div>
-        ) : (
-          <div className="h-screen -mt-40 flex items-center justify-center">
-            <div />
-            <div className="text-sgray-300">
-              No test created yet ? Create first
-              <Link href="/dashboard/generatetest">
-                <button
-                  className="text-sgray-300 hover:text-spurple-300 hover:font-medium underline mx-2"
-                  onClick={() => {
-                    setList({
-                      create: true,
-                      id: "",
-                      title: "",
-                      description: "",
-                      attempters: [],
-                    });
-                  }}
-                >
-                  test
-                </button>
-              </Link>{" "}
-              now !
-            </div>
-            <div />
+        </div>
+      ) : (
+        <div className="h-screen -mt-40 flex items-center justify-center">
+          <div />
+          <div className="text-sgray-300">
+            No test created yet ? Create first
+            <Link href="/dashboard/generatetest">
+              <button
+                className="text-sgray-300 hover:text-spurple-300 hover:font-medium underline mx-2"
+                onClick={() => {
+                  setList({
+                    create: true,
+                    id: "",
+                    title: "",
+                    description: "",
+                    attempters: [],
+                  });
+                }}
+              >
+                test
+              </button>
+            </Link>{" "}
+            now !
           </div>
-        )}
+          <div />
+        </div>
+      )}
     </>
   );
 }

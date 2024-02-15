@@ -28,9 +28,9 @@ export default function Login({setErrorMessage, firstTime=true}) {
     };
 
     fetch("http://localhost:8080/auth/login", requestOptions)
-      .then((response) => response.text())
+      .then(async (response) => response.json())
       .then((result) => {
-        if(JSON.parse(result).token){
+        if(result.token){
           if(firstTime=='false'){
             router.back();
           }
@@ -39,16 +39,16 @@ export default function Login({setErrorMessage, firstTime=true}) {
           }
         }
         else{
-          if(JSON.parse(result).message){
+          if(result.message){
             setErrorMessage(JSON.parse(result).message);
           }
           else{
-            setErrorMessage(JSON.stringify(result));
+            setErrorMessage(JSON.stringify(result)?JSON.stringify(result):result.toString());
           }
         }
       })
       .catch((error) => {
-        setErrorMessage(JSON.stringify(error));
+        setErrorMessage(JSON.stringify(error)?JSON.stringify(error):error.toString());
         console.log("error in catch: ",error)
       });
     }

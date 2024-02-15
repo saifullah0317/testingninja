@@ -1,8 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     assetPrefix:'',
-    env:{
-        backendUrl:'http://localhost:8080'
+    webpack5: true,
+    webpack: (config) => {
+      config.resolve.fallback = { fs: false };
+  
+      return config;
     }
 }
 

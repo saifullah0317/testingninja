@@ -14,6 +14,7 @@ import { TestContext } from "@/app/context/TestState";
 import Loadingicon from "@/app/components/Loadingicon";
 import { convertEmails } from "@/app/Helper";
 import TimePicker from "@/app/components/TimePicker";
+import QuestionPoolModal from "@/app/components/QuestionPoolModal";
 export default function Generatetest() {
   const router = useRouter();
   const [desQuestions, setDesQuestions] = useState([]);
@@ -35,6 +36,7 @@ export default function Generatetest() {
   const [categorySelected, setCategorySelected] = useState("Uncategorized");
   const [testTitle, setTestTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [testDuration, setTestDuration] = useState();
   const [respondentlists, setRespondentlists] = useState([]);
   const [selectedRespondentlists, setSelectedRespondentlists] = useState([]);
   const [testInstructions, setTestInstructions] = useState([
@@ -47,6 +49,34 @@ export default function Generatetest() {
   function removeSpaces(text) {
     return text.split(" ").join("");
   }
+  function checkRequiredInputs() {
+    if (testTitle && categorySelected && (desQuestions || mcqs)) {
+      if (postTest) {
+        if (testDuration) {
+          if ((!allowAttemption && respondentlists) || allowAttemption) {
+            return true;
+          } else {
+            setErrorMessage("Please select atleast one respondent list.");
+          }
+        } else {
+          setErrorMessage("Test duration is required.");
+        }
+      } else {
+        return true;
+      }
+    } else {
+      setErrorMessage(
+        "Either test title, category or question to add is missing. Kindly fill all of them."
+      );
+    }
+    return false;
+  }
+  function createTest() {
+    if (checkRequiredInputs()) {
+      postQuestions();
+    }
+  }
+  function postQuestions() {}
   useEffect(() => {
     var requestOptions = {
       method: "GET",
@@ -111,6 +141,7 @@ export default function Generatetest() {
         setDesQuestions1={setDesQuestions}
       />
       <CustomMcqModal mcqs1={mcqs} setMcqs1={setMcqs} />
+      <QuestionPoolModal desQuestions={desQuestions} setDesQuestions={setDesQuestions}/>
       <Unauthorizederror message={modalMessage} setMessage={setModalMessage} />
       <div className="flex flex-col space-y-5 -mt-12">
         <div className="mt-4">
@@ -156,7 +187,7 @@ export default function Generatetest() {
               onClick={() => {
                 if (!test.id) {
                   if (listname && emails) {
-                    submitList();
+                    createTest();
                   } else {
                     setErrorMessage(
                       "Please fill all the required input fields."
@@ -311,7 +342,11 @@ export default function Generatetest() {
                   </ul>
                 </div>
 
-                <button className="bg-swhite border border-spurple-300 font-medium text-spurple-300 px-5 py-2 rounded-lg">
+                <button
+                  data-modal-target="questionpoolmodal"
+                  data-modal-toggle="questionpoolmodal"
+                  className="bg-swhite border border-spurple-300 font-medium text-spurple-300 px-5 py-2 rounded-lg"
+                >
                   Generate with AI
                 </button>
               </div>
@@ -405,6 +440,11 @@ export default function Generatetest() {
                   }
                 </p> */}
               </div>
+            </div>
+
+            <div className="flex justify-start space-x-5 items-center">
+              <span className="text-sgray-300">Test duration</span>
+              <TimePicker setTime={setTestDuration} />
             </div>
             <div className={postTest ? "flex" : "hidden"}>
               <div className="flex items-center h-6">
@@ -623,12 +663,15 @@ export default function Generatetest() {
               </div>
               <div className="flex justify-end space-x-5 items-center">
                 <span className="text-sgray-300">Test deactivation time</span>
-                <TimePicker setTimes={setDeactivationTime} />
+                <TimePicker setTime={setDeactivationTime} />
               </div>
             </div>
 
             <div className="flex flex-col space-y-5">
-              <span className="text-md text-sgray-300">Add instruction that will appear to respondent before attempting exam (optional)</span>
+              <span className="text-md text-sgray-300">
+                Add instruction that will appear to respondent before attempting
+                exam (optional)
+              </span>
               <div className="flex justify-start">
                 <input
                   type="text"
@@ -650,14 +693,14 @@ export default function Generatetest() {
                 </button>
               </div>
               <div>
-              <h2 className="mb-2 text-lg font-semibold text-spurple-300">
-                Exam instructions:
-              </h2>
-              <ul className="w-full space-y-1 text-spurple-300 list-disc list-inside">
-                {testInstructions.map((instruction, index) => (
-                  <li key={index}>{instruction}</li>
-                ))}
-              </ul>
+                <h2 className="mb-2 text-lg font-semibold text-spurple-300">
+                  Exam instructions:
+                </h2>
+                <ul className="w-full space-y-1 text-spurple-300 list-disc list-inside">
+                  {testInstructions.map((instruction, index) => (
+                    <li key={index}>{instruction}</li>
+                  ))}
+                </ul>
               </div>
             </div>
           </div>
