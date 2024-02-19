@@ -16,7 +16,7 @@ export default function Mytests() {
       credentials: "include",
     };
 
-    fetch('http://localhost:8080/test', requestOptions)
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/test`, requestOptions)
       .then(async (response) => {
         const result=await response.json();
         if (Array.isArray(result)) {

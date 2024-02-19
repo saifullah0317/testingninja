@@ -10,7 +10,7 @@ export default function Dashboard() {
       credentials:'include'
     };
     
-    fetch("http://localhost:8080/auth/logout", requestOptions)
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/logout`, requestOptions)
       .then(response => response.text())
       .then(result => console.log(result))
       .catch(error => console.log('error', error));

@@ -3,8 +3,8 @@ import React from "react";
 import { useState } from "react";
 import Message from "./Message";
 export default function CustomQuestionModal({
-  desQuestions1,
-  setDesQuestions1,
+  desQuestions,
+  setDesQuestions,
 }) {
   const [questionText, setQuestionText] = useState("");
   const [startRange, setStartRange] = useState();
@@ -22,8 +22,8 @@ export default function CustomQuestionModal({
     }
     else{
       setErrorMessage("");
-      setDesQuestions1([
-        ...desQuestions1,
+      setDesQuestions([
+        ...desQuestions,
         {
           question: questionText,
           startRange: startRange,

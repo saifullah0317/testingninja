@@ -44,7 +44,7 @@ export default function Respondentlist() {
       credentials: "include",
     };
 
-    fetch("http://localhost:8080/attempterlist", requestOptions)
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/attempterlist`, requestOptions)
       .then(async (response) => {
         const data = await response.json();
         console.log("data: ",data);
@@ -100,7 +100,7 @@ export default function Respondentlist() {
     };
 
     fetch(
-      `http://localhost:8080/attempterlist/${list.id}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/attempterlist/${list.id}`,
       requestOptions
     )
       .then(async (response) => response.json())
@@ -143,7 +143,7 @@ export default function Respondentlist() {
       redirect: 'follow',
       credentials:'include'
     };
-    fetch(`http://localhost:8080/attempterlist/${list.id}`, requestOptions)
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/attempterlist/${list.id}`, requestOptions)
       .then(async (result) => {
         const resultData=await result.json();
         console.log("result: ",resultData);

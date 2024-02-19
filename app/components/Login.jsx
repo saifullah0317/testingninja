@@ -27,7 +27,7 @@ export default function Login({setErrorMessage, firstTime=true}) {
       redirect: "follow",
     };
 
-    fetch("http://localhost:8080/auth/login", requestOptions)
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/login`, requestOptions)
       .then(async (response) => response.json())
       .then((result) => {
         if(result.token){

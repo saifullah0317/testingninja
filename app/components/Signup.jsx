@@ -40,7 +40,7 @@ export default function Signup({ setErrorMessage }) {
       credentials: "include",
     };
 
-    fetch("http://localhost:8080/auth/signup", requestOptions)
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/signup`, requestOptions)
       .then(async (response) => await response.json())
       .then((result) => {
         if (result.token) {

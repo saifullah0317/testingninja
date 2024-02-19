@@ -21,7 +21,7 @@ export default function Respondents() {
       redirect: "follow",
     };
 
-    fetch("http://localhost:8080/attempterlist", requestOptions)
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/attempterlist`, requestOptions)
       .then(async (response) => {
         const data = await response.json();
         console.log("attempterList data: ", data);

@@ -17,7 +17,7 @@ export default function TimePicker({setTime}) {
           setSelectedHour(e.target.value);
           setTime(calculateUnixEpochTime());
         }}
-        placeholder="hours"
+        placeholder="23"
         className="w-28 rounded-lg border border-swhite text-spurple-300"
       />
       <span>:</span>
@@ -30,7 +30,7 @@ export default function TimePicker({setTime}) {
           setSelectedMinute(e.target.value);
           setTime(calculateUnixEpochTime());
         }}
-        placeholder="minutes"
+        placeholder="59"
         className="w-28 rounded-lg border border-swhite text-spurple-300"
       />
     </div>

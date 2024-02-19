@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -14,11 +14,13 @@ import { TestContext } from "@/app/context/TestState";
 import Loadingicon from "@/app/components/Loadingicon";
 import { convertEmails } from "@/app/Helper";
 import TimePicker from "@/app/components/TimePicker";
-import QuestionPoolModal from "@/app/components/QuestionPoolModal";
+import { QuestionsContext } from "@/app/context/QuestionsState";
+import { McqsContext } from "@/app/context/McqsState";
+import { set } from "date-fns";
 export default function Generatetest() {
   const router = useRouter();
-  const [desQuestions, setDesQuestions] = useState([]);
-  const [mcqs, setMcqs] = useState([]);
+  const {desQuestions, setDesQuestions} = useContext(QuestionsContext);
+  const {mcqs, setMcqs} = useContext(McqsContext);
   const [postTest, setPostTest] = useState(true);
   const [allowAttemption, setAllowAttemption] = useState(false);
   const [activateTest, setActivateTest] = useState(true);
@@ -76,7 +78,9 @@ export default function Generatetest() {
       postQuestions();
     }
   }
-  function postQuestions() {}
+  function postQuestions() {
+
+  }
   useEffect(() => {
     var requestOptions = {
       method: "GET",
@@ -84,16 +88,13 @@ export default function Generatetest() {
       credentials: "include",
     };
 
-    fetch("http://localhost:8080/category", requestOptions)
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/category`, requestOptions)
       .then(async (response) => await response.json())
       .then((result) => {
         if (Array.isArray(result)) {
           setCategories(result);
         } else if (result.status == 401 || result.statusCode == 401) {
           setErrorMessage("Authorization error ! Login again.");
-          // setTimeout(() => {
-          //   router.push("/login?first=false");
-          // }, 2000);
         } else if (result.code) {
           setErrorMessage(JSON.stringify(result));
         } else if (result.message) {
@@ -106,7 +107,7 @@ export default function Generatetest() {
         setErrorMessage(error.toString());
       });
 
-    fetch("http://localhost:8080/attempterlist", requestOptions)
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/attempterlist`, requestOptions)
       .then(async (response) => {
         const data = await response.json();
         if (Array.isArray(data)) {
@@ -136,12 +137,12 @@ export default function Generatetest() {
     <>
       {/* <ErrorModal className={modalMessage?"":'hidden'}/> */}
       <DefaultModal />
-      <CustomQuestionModal
-        desQuestions1={desQuestions}
-        setDesQuestions1={setDesQuestions}
+      {/* <CustomQuestionModal
+        desQuestions={desQuestions}
+        setDesQuestions={setDesQuestions}
       />
-      <CustomMcqModal mcqs1={mcqs} setMcqs1={setMcqs} />
-      <QuestionPoolModal desQuestions={desQuestions} setDesQuestions={setDesQuestions}/>
+      <CustomMcqModal mcqs={mcqs} setMcqs={setMcqs} />
+      <QuestionPoolModal desQuestions={desQuestions} setDesQuestions={setDesQuestions}/> */}
       <Unauthorizederror message={modalMessage} setMessage={setModalMessage} />
       <div className="flex flex-col space-y-5 -mt-12">
         <div className="mt-4">
@@ -283,9 +284,7 @@ export default function Generatetest() {
               <span className="text-sgray-300 text-md">
                 Add questions to the test
               </span>
-              <div className="flex justify-end space-x-2">
-                {/* Add custom question dropdown */}
-
+              {/* <div className="flex justify-end space-x-2">
                 <button
                   id="dropdownHoverButton"
                   data-dropdown-toggle="dropdownHover"
@@ -310,8 +309,6 @@ export default function Generatetest() {
                     />
                   </svg>
                 </button>
-
-                {/* <!-- Dropdown menu --> */}
                 <div
                   id="dropdownHover"
                   class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-lg w-44 dark:bg-gray-700"
@@ -341,7 +338,6 @@ export default function Generatetest() {
                     </li>
                   </ul>
                 </div>
-
                 <button
                   data-modal-target="questionpoolmodal"
                   data-modal-toggle="questionpoolmodal"
@@ -349,9 +345,13 @@ export default function Generatetest() {
                 >
                   Generate with AI
                 </button>
+              </div> */}
+              <div className="flex justify-end space-x-5">
+                {/* <Link className="px-5 py-2 border-spurple-300 text-spurple-300 bg-transparent">Add existing questions</Link> */}
+                <Link href="/dashboard/questions" className="px-5 py-2 border border-spurple-300 rounded-lg text-spurple-300 text-md font-medium bg-transparent">Create questions</Link>
               </div>
             </div>
-            <div
+            {/* <div
               className={
                 (mcqs.length > 0 ? "" : "hidden") +
                 " grid grid-cols-1 divide-y border border-spurple-300 rounded-lg px-5 py-3"
@@ -392,7 +392,7 @@ export default function Generatetest() {
                   <span>Question {index+1}: {question.question}</span>
                 </div>
               ))}
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -442,7 +442,7 @@ export default function Generatetest() {
               </div>
             </div>
 
-            <div className="flex justify-start space-x-5 items-center">
+            <div className={postTest?"flex justify-start space-x-5 items-center":"hidden"}>
               <span className="text-sgray-300">Test duration</span>
               <TimePicker setTime={setTestDuration} />
             </div>
@@ -564,7 +564,7 @@ export default function Generatetest() {
                       ))}
                     </ul>
                   ) : (
-                    <span className="text-sgray-300 p-5 text-md font-medium">
+                    <span aria-labelledby="dropdownHelperButton" className="text-sgray-300 p-5 text-md font-medium">
                       No list added yet, create list on respondents page.
                     </span>
                   )}
@@ -667,7 +667,7 @@ export default function Generatetest() {
               </div>
             </div>
 
-            <div className="flex flex-col space-y-5">
+            <div className={postTest?"flex flex-col space-y-5":'hidden'}>
               <span className="text-md text-sgray-300">
                 Add instruction that will appear to respondent before attempting
                 exam (optional)

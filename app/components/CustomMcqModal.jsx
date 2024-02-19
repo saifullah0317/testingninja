@@ -1,8 +1,8 @@
-"use client";
+"use client"
 import React from "react";
 import { useState } from "react";
 import Message from "./Message";
-export default function CustomMcqModal({ mcqs1, setMcqs1 }) {
+export default function CustomMcqModal({ mcqs, setMcqs }) {
   const [options, setOptions] = useState([]);
   const [questionText, setQuestionText] = useState("");
   const [optionText, setOptionText] = useState("");
@@ -18,8 +18,8 @@ export default function CustomMcqModal({ mcqs1, setMcqs1 }) {
     }
     else{
       setErrorMessage("");
-      setMcqs1([
-        ...mcqs1,
+      setMcqs([
+        ...mcqs,
         {
           question: questionText,
           allowMultChoice: allowMultChoice,
