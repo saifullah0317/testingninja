@@ -3,6 +3,8 @@ import "./globals.css";
 import RespondentlistState from "./context/RespondentlistState";
 import McqsState from "./context/McqsState";
 import QuestionsState from "./context/QuestionsState";
+import TestState from "./context/TestState";
+import ResponseState from "./context/ResponseState";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,11 +23,15 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body className={inter.className}>
-        <QuestionsState>
-          <McqsState>
-            <RespondentlistState>{children}</RespondentlistState>
-          </McqsState>
-        </QuestionsState>
+        <ResponseState>
+          <TestState>
+            <QuestionsState>
+              <McqsState>
+                <RespondentlistState>{children}</RespondentlistState>
+              </McqsState>
+            </QuestionsState>
+          </TestState>
+        </ResponseState>
         <script
           src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/datepicker.min.js"
           async

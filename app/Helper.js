@@ -19,14 +19,12 @@ export function convertDateFormat(mongodbDateFormat) {
   return month + " " + date + ", " + year;
 }
 
-export function convertEmails(respondentsList) {
+export function convertEmails(respondentsList, maxLength) {
   let emails = [];
   respondentsList.map((respondent) => {
     emails.push(respondent.email);
   });
-  let emailsString = "",
-    maxLength = 45,
-    index = 0;
+  let emailsString = "", index = 0;
   while (index < emails.length) {
     emailsString += '"' + emails[index] + '", ';
     if (emailsString.length > maxLength) {

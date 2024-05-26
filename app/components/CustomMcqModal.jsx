@@ -2,7 +2,7 @@
 import React from "react";
 import { useState } from "react";
 import Message from "./Message";
-export default function CustomMcqModal({ mcqs, setMcqs }) {
+export default function CustomMcqModal({ mcqs, setMcqs, currentTest, setChanged }) {
   const [options, setOptions] = useState([]);
   const [questionText, setQuestionText] = useState("");
   const [optionText, setOptionText] = useState("");
@@ -17,6 +17,9 @@ export default function CustomMcqModal({ mcqs, setMcqs }) {
       setErrorMessage("Please fill the required fields (question and atleast 2 options)");
     }
     else{
+      if(currentTest._id){
+        setChanged(true);
+      }
       setErrorMessage("");
       setMcqs([
         ...mcqs,

@@ -52,7 +52,7 @@ export default function Respondentcard({
                 attempters:attempters.map((attempter)=>attempter.email)
               })
               }}>
-              {convertEmails(attempters)}
+              {convertEmails(attempters,45)}
               </button>
             </Link>
           </div>

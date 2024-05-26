@@ -346,7 +346,7 @@ export default function Respondentlist() {
                     type="file"
                     id="emailsfile"
                     accept=".xlsx,.csv"
-                    className="appearance-none file:bg-spurple-300"
+                    className="appearance-none file:bg-spurple-300 text-spurple-300"
                     onChange={handleImport}
                     multiple
                   />

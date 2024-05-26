@@ -83,6 +83,21 @@ export default function Navbar({ selectedRoute, bg }) {
             </li>
             <li>
               <Link
+                href="/exambrowser"
+                className={`text-lg text-spurple-300 block py-2 px-3 ${highlightRoute(
+                  "exambrowser"
+                )} hover:bg-transparent md:hover:bg-transparent md:hover:text-spurple-300 md:p-0 `}
+                style={
+                  selectedRoute === "exambrowser"
+                    ? { borderBottom: "3px solid currentColor" }
+                    : {}
+                }
+              >
+                Attempt test
+              </Link>
+            </li>
+            <li>
+              <Link
                 href="/about"
                 className={`text-lg text-spurple-300 block py-2 px-3 ${highlightRoute(
                   "about"

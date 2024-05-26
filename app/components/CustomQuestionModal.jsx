@@ -5,6 +5,8 @@ import Message from "./Message";
 export default function CustomQuestionModal({
   desQuestions,
   setDesQuestions,
+  currentTest,
+  setChanged
 }) {
   const [questionText, setQuestionText] = useState("");
   const [startRange, setStartRange] = useState();
@@ -21,6 +23,9 @@ export default function CustomQuestionModal({
       setErrorMessage("Number of words cannot be less than one.")
     }
     else{
+      if(currentTest._id){
+        setChanged(true);
+      }
       setErrorMessage("");
       setDesQuestions([
         ...desQuestions,

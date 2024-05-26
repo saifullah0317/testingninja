@@ -40,15 +40,15 @@ export default function Login({setErrorMessage, firstTime=true}) {
         }
         else{
           if(result.message){
-            setErrorMessage(JSON.parse(result).message);
+            setErrorMessage(result.message);
           }
           else{
-            setErrorMessage(JSON.stringify(result)?JSON.stringify(result):result.toString());
+            setErrorMessage(result.toString()?result.toString():JSON.stringify(result));
           }
         }
       })
       .catch((error) => {
-        setErrorMessage(JSON.stringify(error)?JSON.stringify(error):error.toString());
+        setErrorMessage(error.toString()?error.toString():JSON.stringify(error));
         console.log("error in catch: ",error)
       });
     }
@@ -65,14 +65,14 @@ export default function Login({setErrorMessage, firstTime=true}) {
       </div>
       <input
         type="email"
-        className="rounded-lg bg-sgray text-spurple-300 font-medium"
+        className="rounded-lg bg-sgray text-spurple-300 font-medium focus:ring-spurple-300 focus:border-spurple-300"
         placeholder="Email address"
         value={email}
         onChange={(e)=>{setEmail(e.target.value)}}
       />
       <input
         type="password"
-        className="rounded-lg bg-sgray text-spurple-300 font-medium"
+        className="rounded-lg bg-sgray text-spurple-300 font-medium focus:ring-spurple-300 focus:border-spurple-300"
         placeholder="Password"
         value={psw}
         onChange={(e)=>{setPsw(e.target.value)}}

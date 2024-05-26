@@ -4,7 +4,7 @@ import { useState } from "react";
 import Loadingicon from "./Loadingicon";
 // import { PDFDocument } from "pdfjs-dist";
 // import { PDFDocumentProxy } from "pdfjs-dist";
-export default function QuestionPoolModal({ desQuestions, setDesQuestions }) {
+export default function QuestionPoolModal({ desQuestions, setDesQuestions, currentTest, setChanged }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [withPrompt, setWithPrompt] = useState(false);
   const [prompt, setPrompt] = useState("");
@@ -65,6 +65,9 @@ export default function QuestionPoolModal({ desQuestions, setDesQuestions }) {
           setErrorMessage("");
           setPrompt("");
           setQuestions(0);
+          if(currentTest._id){
+            setChanged(true);
+          }
         } else {
           setErrorMessage(
             JSON.stringify(result) ? JSON.stringify(result) : result.toString()
@@ -75,6 +78,7 @@ export default function QuestionPoolModal({ desQuestions, setDesQuestions }) {
       })
       .catch((error) => {
         setErrorMessage(JSON.stringify(error)?JSON.stringify(error):error.toString());
+        // setErrorMessage(error.toString()?error.toString():JSON.stringify(error));
         setLoading(false);
         console.log("error from catch: ", error);
       });

@@ -2,10 +2,12 @@
 import Link from "next/link";
 import Testcard from "@/app/components/Testcard";
 import Filtertests from "@/app/components/Filtertests";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { TestContext } from "@/app/context/TestState";
 import Unauthorizederror from "@/app/components/Unauthorizederror";
 import Message from "@/app/components/Message";
 export default function Mytests() {
+  const {currentTest, setCurrentTest} = useContext(TestContext);
   const [tests, setTests] = useState([]);
   const [modalMessage, setModalMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -52,7 +54,7 @@ export default function Mytests() {
           </span>
         </div>
         <Link href="/dashboard/generatetest">
-          <button className="px-3 py-2 bg-spurple-300 text-swhite text-md font-medium rounded-lg">
+          <button className="px-3 py-2 bg-spurple-300 text-swhite text-md font-medium rounded-lg" onClick={() => { setCurrentTest({}) }}>
             New test
           </button>
         </Link>
@@ -88,18 +90,8 @@ export default function Mytests() {
       <Filtertests />
       {tests.length > 0 ? (
         <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 mt-5">
-          {tests.map((test) => (
-            <Link href="/" key={test.id}>
-              <Testcard
-                status={test.status}
-                date={test.createdAt}
-                title={test.title}
-                description={test.description}
-                avgScore={test.avgScore}
-                results={test.results}
-                category={test.category}
-              />
-            </Link>
+          {tests.map((test, index) => (
+              <Testcard test={test} key={index}/>
           ))}
         </div>
       ) : (
@@ -110,15 +102,7 @@ export default function Mytests() {
             <Link href="/dashboard/generatetest">
               <button
                 className="text-sgray-300 hover:text-spurple-300 hover:font-medium underline mx-2"
-                onClick={() => {
-                  setList({
-                    create: true,
-                    id: "",
-                    title: "",
-                    description: "",
-                    attempters: [],
-                  });
-                }}
+                onClick={() => { setCurrentTest({}) }}
               >
                 test
               </button>

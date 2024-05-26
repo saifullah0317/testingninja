@@ -2,12 +2,9 @@
 import { createContext, useState } from "react";
 export const TestContext=createContext();
 const TestState=(props)=>{
-    const listObj={
-        id:''
-    }
-    const [test,setTest]=useState(listObj);
+    const [currentTest, setCurrentTest]=useState({id:''});
     return(
-        <TestContext.Provider value={{test, setTest}}>
+        <TestContext.Provider value={{currentTest, setCurrentTest}}>
             {props.children}
         </TestContext.Provider>
     )

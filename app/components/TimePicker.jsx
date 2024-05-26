@@ -1,10 +1,10 @@
 import React from "react";
 import { useState } from "react";
-export default function TimePicker({setTime}) {
+export default function TimePicker({ setTime }) {
   const [selectedHour, setSelectedHour] = useState();
   const [selectedMinute, setSelectedMinute] = useState();
-  function calculateUnixEpochTime() {
-    return selectedHour * 3600 + selectedMinute * 60;
+  function calculateMinutes() {
+    return (Number(selectedHour) * 60) + Number(selectedMinute);
   }
   return (
     <div className="flex flex-row items-center justify-start space-x-2">
@@ -15,9 +15,12 @@ export default function TimePicker({setTime}) {
         value={selectedHour}
         onChange={(e) => {
           setSelectedHour(e.target.value);
-          setTime(calculateUnixEpochTime());
+          if (selectedHour && selectedMinute) {
+            setTime(calculateMinutes());
+            console.log("Time selected as:", calculateMinutes());
+          }
         }}
-        placeholder="23"
+        placeholder="hours"
         className="w-28 rounded-lg border border-swhite text-spurple-300"
       />
       <span>:</span>
@@ -28,9 +31,12 @@ export default function TimePicker({setTime}) {
         value={selectedMinute}
         onChange={(e) => {
           setSelectedMinute(e.target.value);
-          setTime(calculateUnixEpochTime());
+          if (selectedHour && selectedMinute) {
+            setTime(calculateMinutes());
+            console.log("Time selected as:", calculateMinutes());
+          }
         }}
-        placeholder="59"
+        placeholder="minutes"
         className="w-28 rounded-lg border border-swhite text-spurple-300"
       />
     </div>

@@ -1,6 +1,7 @@
 "use client";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Questionpoolcard from "@/app/components/Questionpoolcard";
 import Deleteicon from "@/app/components/Deleteicon";
 import CustomMcqModal from "@/app/components/CustomMcqModal";
@@ -8,48 +9,65 @@ import CustomQuestionModal from "@/app/components/CustomQuestionModal";
 import QuestionPoolModal from "@/app/components/QuestionPoolModal";
 import { QuestionsContext } from "@/app/context/QuestionsState";
 import { McqsContext } from "@/app/context/McqsState";
+import Unauthorizederror from "@/app/components/Unauthorizederror";
+import Message from "@/app/components/Message";
+import Loadingicon from "@/app/components/Loadingicon";
 export default function Questions() {
-  const {mcqs, setMcqs} = useContext(McqsContext);
-  const {desQuestions, setDesQuestions} = useContext(QuestionsContext);
-  const tests = [
-    {
-      id: 1,
-      title: "Dummy pool",
-      prompt: "this is the description of the dummy test",
-      numOfQuestions: 0,
-      numOfTests: 0,
-    },
-    {
-      id: 2,
-      title: "Dummy pool",
-      prompt: "this is the description of the dummy test",
-      numOfQuestions: 0,
-      numOfTests: 0,
-    },
-    {
-      id: 3,
-      title: "Dummy pool",
-      prompt: "this is the description of the dummy test",
-      numOfQuestions: 0,
-      numOfTests: 0,
-    },
-    {
-      id: 4,
-      title: "Dummy pool",
-      prompt: "this is the description of the dummy test",
-      numOfQuestions: 0,
-      numOfTests: 0,
-    },
-    {
-      id: 5,
-      title: "Dummy pool",
-      prompt: "this is the description of the dummy test",
-      numOfQuestions: 0,
-      numOfTests: 0,
-    },
-  ];
+  const { mcqs, setMcqs } = useContext(McqsContext);
+  const { desQuestions, setDesQuestions } = useContext(QuestionsContext);
+  const router = useRouter();
+  const [modalMessage, setModalMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // useEffect(()=>{
+
+  // },[]);
+
+  function handleFinalize() {
+    setLoading(true);
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    const raw = JSON.stringify({
+      questions: mcqs.concat(desQuestions)
+    });
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+      credentials:'include'
+    };
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/question/all`, requestOptions)
+      .then(async (response) => await response.json())
+      .then((result) => {
+        if (Array.isArray(result)) {
+          console.log('Questions saved successfully!');
+          router.push("/dashboard/generatetest");
+        } else if (result.status == 401 || result.statusCode == 401) {
+          setModalMessage("Authorization error ! Login again.");
+        } else if (result.message) {
+          setErrorMessage(result.message);
+        } else {
+          setErrorMessage(
+            JSON.stringify(result) ? JSON.stringify(result) : result.toString()
+          );
+        }
+      })
+      .catch((error) => {
+        console.log("error from catch of questions: ",error)
+        setErrorMessage(
+          error.toString() ? error.toString() : JSON.stringify(error)
+        );
+      });
+      setLoading(false);
+  }
   return (
     <>
+    <Unauthorizederror message={modalMessage} setMessage={setModalMessage} />
+    <div className="-mt-4 mb-2">
+      <Message type={errorMessage ? "Error" : ""} message={errorMessage} />
+    </div>
       <CustomMcqModal mcqs={mcqs} setMcqs={setMcqs} />
       <CustomQuestionModal
         desQuestions={desQuestions}
@@ -127,9 +145,16 @@ export default function Questions() {
           >
             Generate with AI
           </button>
-          <Link href="/dashboard/generatetest" className="bg-spurple-300 font-medium text-swhite px-5 py-2 rounded-lg">
-            Finalize
-          </Link>
+
+          
+          <button
+            className="bg-spurple-300 font-medium text-swhite px-5 py-2 rounded-lg"
+            onClick={handleFinalize}
+          >
+            <div>
+              {loading ? (<><Loadingicon/><span>Saving...</span></>):(<span>Save</span>)}
+            </div>
+          </button>
         </div>
       </div>
       <div
@@ -188,11 +213,13 @@ export default function Questions() {
                 </div>
               ))}
             </div>
-            <button onClick={()=>{
-              setMcqs((currentQuestions) =>
-                currentQuestions.filter((tempQuestion, i) => i != index)
-              );
-            }}>
+            <button
+              onClick={() => {
+                setMcqs((currentQuestions) =>
+                  currentQuestions.filter((tempQuestion, i) => i != index)
+                );
+              }}
+            >
               <Deleteicon hover={true} size={35} />
             </button>
           </div>
