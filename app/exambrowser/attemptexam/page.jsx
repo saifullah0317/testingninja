@@ -13,12 +13,64 @@ export default function Page() {
   const [divClass, setDivClass] = useState(
     "unselectable bg-white h-screen hidden"
   );
-  const [questions, setQuestions] = useState([]);
-  const [fetchError, setError] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
+  const [messageType, setMessageType] = useState(false);
   const [windowOpened, setWindowOpened] = useState(false);
   const [fetchedTest, setFetchedTest] = useState({});
+  const [responses, setResponses] = useState([]);
+  const [timeRemaining, setTimeRemaining]=useState(0);
+  
+  const submitResponse = () => {
+    console.log("responses: ",responses);
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify({
+      attempterid: currentResponse.attempterId,
+      responses
+    });
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow"
+    };
+
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/response`, requestOptions)
+      .then(async (response) => await response.json())
+      .then((result) => {
+        window.close();
+        if(result._id){
+          setMessageType(true);
+          setErrorMessage("Your response has been submitted successfully !");
+        }
+        else if(result.message){
+          setMessageType(false);
+          setErrorMessage(result.message);
+        }
+        else{
+          setMessageType(false);
+          setErrorMessage(JSON.stringify(result));
+        }
+      })
+      .catch((error) => {
+        setMessageType(false);
+        setErrorMessage(JSON.stringify(error));
+      });
+  };
+
   const enterFullscreen = () => {
+    // console.log("fetchedTest: ",fetchedTest);
+    // console.log("time: ",fetchedTest.time*60)
+    // console.log("time remaining: ",timeRemaining);
+    // const timeCounter=setInterval(() => {
+    //   if(timeRemaining<=0){
+    //     clearInterval(timeCounter);
+    //     setDivClass("unselectable bg-white h-screen hidden");
+    //   }
+    //   setTimeRemaining(timeRemaining-1);
+    // }, 1000);
     const elem = document.getElementById("testscreen");
     if (elem) {
       if (elem.requestFullscreen) {
@@ -38,11 +90,13 @@ export default function Page() {
       } else {
         // fullscreen mode deactivated
         setDivClass("unselectable bg-white h-screen hidden");
-        if (!windowOpened) {
-          window.close();
-          router.push("/");
-          setWindowOpened(true);
-        }
+        // setTimeRemaining(0);
+        // clearInterval(timeCounter);
+        // if (!windowOpened) {
+        //   window.close();
+        //   router.push("/");
+        //   setWindowOpened(true);
+        // }
       }
     });
     const requestOptions = {
@@ -55,19 +109,22 @@ export default function Page() {
         .then((result) => {
           if(result._id){
             setFetchedTest(result);
+            // setTimeRemaining(result.time*60);
           }else{
+            setMessageType(false);
             setErrorMessage(JSON.stringify(result));
           }
         })
         .catch((error) => {
-          setErrorMessage(JSON.stringify(result));
+          setMessageType(false);
+          setErrorMessage(JSON.stringify(error));
+          console.log("error from catch: ",error)
         });
-  }, [questions, searchParams, router, windowOpened, setFetchedTest, currentResponse]);
-  const attempterid = searchParams.get("attempter");
+  }, [ searchParams, router, windowOpened, setFetchedTest, currentResponse]);
   return (
     <div>
       <ExamNavbar/>
-      <div className={errorMessage?"mt-24 mb-5":"hidden"}><Message type="Error" message={errorMessage}/></div>
+      <div className={errorMessage?"mt-24 mb-5":"hidden"}><Message type={messageType?"Success":"Error"} message={errorMessage}/></div>
       <div className={errorMessage?"hidden":"mt-28"}/>
       <div className="mx-10">
         <h2 className="mb-2 text-lg font-semibold text-spurple-300">
@@ -78,11 +135,12 @@ export default function Page() {
             Once you start the exam, you cannot close it without submitting it.
           </li>
           <li>
-            When you start exam, you wll enter full-screen mode. If you escape
+            When you start exam, you will enter full-screen mode. If you escape
             this mode your exam will be automatically submitted.
           </li>
           <li>You can select, copy or cut any text in the exam.</li>
           <li>You cannot paste anything in any textfield.</li>
+          <li>You can not re-attempt previous question once you click next button.</li>
           {fetchedTest.instructions?.map((instruction, index) => (
             <li key={index}>{instruction}</li>
           ))}
@@ -102,10 +160,10 @@ export default function Page() {
           className={divClass}
           //  style={{overflow:"scroll"}}
         >
-          <ExamNavbar />
+          <ExamNavbar submitResponse={submitResponse}/>
           <div className="overflow-auto">
             {fetchedTest.questions?.length > 0 ? (
-              <div className="mt-28"><ExamQuestion attempter={currentResponse.email} questions={fetchedTest.questions} /></div>
+              <div className="mt-28"><ExamQuestion questions={fetchedTest.questions} responses={responses} setResponses={setResponses}/></div>
             ) : (
               <Loader />
             )}

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 export default function ExamQuestion(props) {
-  const attempterid = props.attempter;
+  // const attempterid = props.attempter;
   const questions = JSON.parse(JSON.stringify(props.questions));
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [buttonClass, setButtonClass] = useState(
@@ -18,48 +18,6 @@ export default function ExamQuestion(props) {
     }
     setTextAreaValue(textArea.value);
   };
-  const submitResponse = (responseDocument) => {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    const raw = JSON.stringify({
-      "attempterid": "663ca1ceefa1f8e32ea20b24",
-      "responses": [
-        {
-          "questionid": "6621bea2789aad51295622e0",
-          "response": "encapsulation, inheritance"
-        },
-        {
-          "questionid": "661ef9c971938d3bf5aeb0f9",
-          "response": "a"
-        }
-      ]
-    });
-
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow"
-    };
-
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/response`, requestOptions)
-      .then(async (response) => await response.json())
-      .then((result) => {
-        if(result._id){
-          
-        }
-        else if(result.message){
-
-        }
-        else{
-
-        }
-      })
-      .catch((error) => {
-
-      });
-  };
   const nextQuestion = () => {
     // questions[currentQuestionIndex]
     console.log("questions[currentQuestionIndex]: ",questions[currentQuestionIndex]);
@@ -76,18 +34,17 @@ export default function ExamQuestion(props) {
     //   setRows(12);
     // }
     // submitResponse(responseDocument);
+    props.setResponses([...props.responses,{questionid:questions[currentQuestionIndex]._id, response:questions[currentQuestionIndex].options.length>0?questions[currentQuestionIndex].options[optionSelected]:textAreaValue}])
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
-      setButtonClass(
-        "hidden absolute right-10 top-1/2 bg-white rounded-full shadow-md h-12 w-12 text-2xl text-indigo-600 hover:text-indigo-400 focus:text-indigo-400 focus:outline-none focus:shadow-outline"
-      );
+      setButtonClass("hidden");
     }
   };
 
   return (
     <div className="flex flex-col w-2/3 mx-auto text-lg mt-20 font-medium h-screen text-spurple-300">
-      {questions[currentQuestionIndex].question}
+      {'Question '+(currentQuestionIndex+1)+': '+questions[currentQuestionIndex].question}
       {questions[currentQuestionIndex].options.length > 0 && (
         <div className="flex flex-col mt-5">
           {questions[currentQuestionIndex].options.map((option, index) => (

@@ -28,7 +28,7 @@ export default function Page() {
       .then(async (response) => await response.json())
       .then((result) => {
         if (result.testId && result.attempterId) {
-          setCurrentResponse({key, email});
+          setCurrentResponse({key, attempterId:result.attempterId});
           router.push(`/exambrowser/attemptexam`);
         } else if (result.message) {
           setErrorMessage(result.message);

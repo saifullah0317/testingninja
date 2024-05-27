@@ -78,9 +78,10 @@ export default function Generatetest() {
     useState("Send mails");
   const initialInstructions = [
     "Once you start the exam, you cannot close it without submitting it.",
-    "When you start exam, you wll enter full-screen mode. If you escape this mode your exam will be automatically submitted.",
+    "When you start exam, you will enter full-screen mode. If you escape this mode your exam will be automatically submitted.",
     "You cannot select, copy or cut any text in the exam.",
     "You cannot paste anything in any textfield.",
+    "You can not re-attempt previous question once you click next button."
   ];
   const [testInstructions, setTestInstructions] = useState(
     currentTest.isPost ? currentTest.instructions : []
@@ -1206,6 +1207,7 @@ export default function Generatetest() {
                       ...testInstructions,
                       singleInstruction,
                     ]);
+                    setSingleInstruction("");
                   }}
                   className="px-5 py-2 rounded-r-lg text-md font-medium bg-spurple-300 text-swhite"
                 >
