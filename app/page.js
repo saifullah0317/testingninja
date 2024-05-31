@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Footer from "./components/Footer";
 import Contactus from "./components/Contactus";
 import Image from "next/image";
+import Link from "next/link";
 import Navbar from "./components/Navbar";
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -63,9 +64,11 @@ export default function Home() {
           </span>
         </div>
         <div className="h-26">
+          <Link href="/exambrowser">
           <button className="bg-spurple-300 text-swhite px-5 py-3 font-semibold rounded-lg ">
             Attempt test
           </button>
+          </Link>
         </div>
       </section>
       <section id="second">
@@ -98,7 +101,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <section className="bg-sgray-200 flex lg:flex-row md:flex-row flex-col py-6 px-5 justify-evenly">
+      {/* <section className="bg-sgray-200 flex lg:flex-row md:flex-row flex-col py-6 px-5 justify-evenly">
         <div className="flex flex-col mb-5">
           <span className="text-spurple-300 text-xl font-bold">
             Want to generate test?
@@ -137,7 +140,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
       <section id="contact" className="py-24">
         <Contactus />
       </section>

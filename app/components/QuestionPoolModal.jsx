@@ -53,7 +53,7 @@ export default function QuestionPoolModal({ desQuestions, setDesQuestions, curre
     };
 
     fetch(
-      `https://24ee-111-88-147-91.ngrok-free.app/${withPrompt ? "prompt" : "context"}`,
+      `http://localhost:8000/${withPrompt ? "prompt" : "context"}`,
       requestOptions
     )
       .then(async (response) => response.json())

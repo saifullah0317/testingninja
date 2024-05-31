@@ -392,7 +392,7 @@ export default function Generatetest() {
         mcqsTemp = [];
       for (let i = 0; i < currentTest.questions.length; i++) {
         let { _id, _v, ...tempQuestion } = currentTest.questions[i];
-        if (currentTest.questions[i].options.length > 1) {
+        if (currentTest.questions[i].options) {
           mcqsTemp.push(tempQuestion);
         } else {
           desQuestionsTemp.push(tempQuestion);

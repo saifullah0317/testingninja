@@ -134,7 +134,7 @@ export default function Footer() {
             />
                 <span className="sr-only">Discord community</span>
               </a>
-              <a href="https://www.linkedin.com/in/saif-ullah-arshad-12b602230" className="text-swhite hover:text-syellow-200 ">
+              <a href="https://www.linkedin.com/in/saif-ullah-arshad-developer" className="text-swhite hover:text-syellow-200 ">
             <img
               width="30"
               height="30"

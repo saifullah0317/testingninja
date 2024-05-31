@@ -5,9 +5,9 @@ export default function pricing() {
     <div>
       <Navbar selectedRoute='pricing'/>
       <div className="flex flex-row justify-evenly mt-24">
-      <Price/>
-      <Price/>
-      <Price/>
+      <Price plan="Basic" price={29}/>
+      <Price plan="Standard" price={59}/>
+      <Price plan="Premium" price={99}/>
       </div>
     </div>
   )
