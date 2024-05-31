@@ -258,31 +258,31 @@ export default function Generatetest() {
     setLoading(false);
   }
   async function deleteTest() {
-    const requestOptions = {
-      method: "DELETE",
-      redirect: "follow",
-      credentials: "include",
-    };
+    // const requestOptions = {
+    //   method: "DELETE",
+    //   redirect: "follow",
+    //   credentials: "include",
+    // };
 
-    fetch(`http://localhost:8080/test/${currentTest._id}`, requestOptions)
-      .then(async (response) => await response.json())
-      .then((result) => {
-        if (result._id) {
-          setErrorMessage("");
-          setSuccessMessage(`Test "${result.title}" deleted sucessfully!`);
-          setTimeout(() => {
-            router.push("/dashboard/mytests");
-          }, 2000);
-        } else if (result.status == 401 || result.statusCode == 401) {
-          // setModalMessage("Authorization error ! Login again.")
-          setErrorMessage("Authorization error ! Login again.");
-        } else {
-          setErrorMessage(result.message || result.toString());
-        }
-      })
-      .catch((error) => {
-        setErrorMessage(error.message || error.toString());
-      });
+    // fetch(`http://localhost:8080/test/${currentTest._id}`, requestOptions)
+    //   .then(async (response) => await response.json())
+    //   .then((result) => {
+    //     if (result._id) {
+    //       setErrorMessage("");
+    //       setSuccessMessage(`Test "${result.title}" deleted sucessfully!`);
+    //       setTimeout(() => {
+    //         router.push("/dashboard/mytests");
+    //       }, 2000);
+    //     } else if (result.status == 401 || result.statusCode == 401) {
+    //       // setModalMessage("Authorization error ! Login again.")
+    //       setErrorMessage("Authorization error ! Login again.");
+    //     } else {
+    //       setErrorMessage(result.message || result.toString());
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     setErrorMessage(error.message || error.toString());
+    //   });
   }
   function postQuestions(desQuestionsParam, mcqsParam) {
     return new Promise((resolve, reject) => {
