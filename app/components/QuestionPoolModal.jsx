@@ -53,7 +53,7 @@ export default function QuestionPoolModal({ desQuestions, setDesQuestions, curre
     };
 
     fetch(
-      `http://localhost:8000/${withPrompt ? "prompt" : "context"}`,
+      `${process.env.NEXT_PUBLIC_FLASK_URL}/${withPrompt ? "prompt" : "context"}`,
       requestOptions
     )
       .then(async (response) => response.json())

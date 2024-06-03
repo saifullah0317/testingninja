@@ -1,6 +1,11 @@
-export default function Loader() {
-    return (
-        <div role="status" className="h-screen flex justify-center items-center">
+export default function Loader(props) {
+  return (
+    <div role="status" className="h-screen flex justify-center items-center">
+      <div className="flex flex-col text-center">
+        <span className={props.text ? "text-spurple-300 text-md" : "hidden"}>
+          {props.text}
+        </span>
+        <div>
           <svg
             aria-hidden="true"
             className="-mt-40 inline w-8 h-8 text-sgray-300 animate-spin fill-spurple-300"
@@ -19,6 +24,7 @@ export default function Loader() {
           </svg>
           <span className="sr-only">Loading...</span>
         </div>
-    );
-  }
-  
+      </div>
+    </div>
+  );
+}

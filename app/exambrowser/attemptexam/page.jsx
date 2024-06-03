@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { useState, useEffect, useContext } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Loader from "@/app/components/Loader";
@@ -6,10 +6,12 @@ import ExamNavbar from "@/app/components/ExamNavbar";
 import ExamQuestion from "@/app/components/ExamQuestion";
 import Message from "@/app/components/Message";
 import { ResponseContext } from "@/app/context/ResponseState";
+import { AnswersContext } from "@/app/context/AnwersState";
 export default function Page() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const {currentResponse, setCurrentResponse} = useContext(ResponseContext);
+  const { currentResponse, setCurrentResponse } = useContext(ResponseContext);
+  const { answers, setAnswers } = useContext(AnswersContext);
   const [divClass, setDivClass] = useState(
     "unselectable bg-white h-screen hidden"
   );
@@ -18,48 +20,70 @@ export default function Page() {
   const [windowOpened, setWindowOpened] = useState(false);
   const [fetchedTest, setFetchedTest] = useState({});
   const [responses, setResponses] = useState([]);
-  const [timeRemaining, setTimeRemaining]=useState(0);
-  
+  const [timeRemaining, setTimeRemaining] = useState(0);
+
   const submitResponse = () => {
-    console.log("responses: ",responses);
+    console.log("responses: ", responses);
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
     const raw = JSON.stringify({
       attempterid: currentResponse.attempterId,
-      responses
+      testid: fetchedTest._id,
+      responses,
     });
 
     const requestOptions = {
       method: "POST",
       headers: myHeaders,
       body: raw,
-      redirect: "follow"
+      redirect: "follow",
     };
 
     fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/response`, requestOptions)
       .then(async (response) => await response.json())
       .then((result) => {
-        window.close();
-        if(result._id){
-          setMessageType(true);
-          setErrorMessage("Your response has been submitted successfully !");
-        }
-        else if(result.message){
+        closeFullscreen();
+        if (result._id) {
+          setAnswers(
+            result.responses.map((res) => {
+              return {
+                question: {
+                  question: res.questionid.question,
+                  options: res.questionid.options,
+                },
+                response: res.response,
+              };
+            })
+          );
+          router.push("/exambrowser/attemptexam/evaluation");
+        } else if (result.message) {
           setMessageType(false);
           setErrorMessage(result.message);
-        }
-        else{
+        } else {
+          console.log("result with error: ", result)
           setMessageType(false);
           setErrorMessage(JSON.stringify(result));
         }
       })
       .catch((error) => {
+        console.log("error: ",error)
         setMessageType(false);
         setErrorMessage(JSON.stringify(error));
       });
   };
 
+  function closeFullscreen() {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+      /* Safari */
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      /* IE11 */
+      document.msExitFullscreen();
+    }
+  }
   const enterFullscreen = () => {
     // console.log("fetchedTest: ",fetchedTest);
     // console.log("time: ",fetchedTest.time*60)
@@ -100,32 +124,40 @@ export default function Page() {
       }
     });
     const requestOptions = {
-        method: "GET",
-        redirect: "follow"
-      };
-      
-      fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/test/${currentResponse.key}`, requestOptions)
-        .then(async (response) => await response.json())
-        .then((result) => {
-          if(result._id){
-            setFetchedTest(result);
-            // setTimeRemaining(result.time*60);
-          }else{
-            setMessageType(false);
-            setErrorMessage(JSON.stringify(result));
-          }
-        })
-        .catch((error) => {
+      method: "GET",
+      redirect: "follow",
+    };
+
+    fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/test/${currentResponse.key}`,
+      requestOptions
+    )
+      .then(async (response) => await response.json())
+      .then((result) => {
+        if (result._id) {
+          setFetchedTest(result);
+          // setTimeRemaining(result.time*60);
+        } else {
           setMessageType(false);
-          setErrorMessage(JSON.stringify(error));
-          console.log("error from catch: ",error)
-        });
-  }, [ searchParams, router, windowOpened, setFetchedTest, currentResponse]);
+          setErrorMessage(JSON.stringify(result));
+        }
+      })
+      .catch((error) => {
+        setMessageType(false);
+        setErrorMessage(JSON.stringify(error));
+        console.log("error from catch: ", error);
+      });
+  }, [searchParams, router, windowOpened, setFetchedTest, currentResponse]);
   return (
     <div>
-      <ExamNavbar/>
-      <div className={errorMessage?"mt-24 mb-5":"hidden"}><Message type={messageType?"Success":"Error"} message={errorMessage}/></div>
-      <div className={errorMessage?"hidden":"mt-28"}/>
+      <ExamNavbar />
+      <div className={errorMessage ? "mt-24 mb-5" : "hidden"}>
+        <Message
+          type={messageType ? "Success" : "Error"}
+          message={errorMessage}
+        />
+      </div>
+      <div className={errorMessage ? "hidden" : "mt-28"} />
       <div className="mx-10">
         <h2 className="mb-2 text-lg font-semibold text-spurple-300">
           Exam instructions:
@@ -140,7 +172,9 @@ export default function Page() {
           </li>
           <li>You can select, copy or cut any text in the exam.</li>
           <li>You cannot paste anything in any textfield.</li>
-          <li>You can not re-attempt previous question once you click next button.</li>
+          <li>
+            You can not re-attempt previous question once you click next button.
+          </li>
           {fetchedTest.instructions?.map((instruction, index) => (
             <li key={index}>{instruction}</li>
           ))}
@@ -160,10 +194,16 @@ export default function Page() {
           className={divClass}
           //  style={{overflow:"scroll"}}
         >
-          <ExamNavbar submitResponse={submitResponse}/>
+          <ExamNavbar submitResponse={submitResponse} />
           <div className="overflow-auto">
             {fetchedTest.questions?.length > 0 ? (
-              <div className="mt-28"><ExamQuestion questions={fetchedTest.questions} responses={responses} setResponses={setResponses}/></div>
+              <div className="mt-28">
+                <ExamQuestion
+                  questions={fetchedTest.questions}
+                  responses={responses}
+                  setResponses={setResponses}
+                />
+              </div>
             ) : (
               <Loader />
             )}

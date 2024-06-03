@@ -87,7 +87,7 @@ export default function Signup({ setErrorMessage }) {
       credentials:'include'
     };
 
-    fetch("http://localhost:8080/category", requestOptions)
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/category`, requestOptions)
       .then(async (response) => await response.json())
       .then((result) => {
         if(!result.category){

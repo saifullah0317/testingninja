@@ -34,7 +34,9 @@ export default function ExamQuestion(props) {
     //   setRows(12);
     // }
     // submitResponse(responseDocument);
-    props.setResponses([...props.responses,{questionid:questions[currentQuestionIndex]._id, response:questions[currentQuestionIndex].options.length>0?questions[currentQuestionIndex].options[optionSelected]:textAreaValue}])
+    props.setResponses([...props.responses,{questionid:questions[currentQuestionIndex]._id, response:questions[currentQuestionIndex].options.length>0?questions[currentQuestionIndex].options[optionSelected]:textAreaValue}]);
+    setOptionSelected(-1);
+    setTextAreaValue("");
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {

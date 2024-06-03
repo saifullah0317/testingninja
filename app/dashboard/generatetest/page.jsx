@@ -173,7 +173,7 @@ export default function Generatetest() {
           credentials: "include",
         };
 
-        fetch(`http://localhost:8080/test/${currentTest._id}`, requestOptions)
+        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/test/${currentTest._id}`, requestOptions)
           .then(async (response) => await response.json())
           .then((result) => {
             if (result._id) {
@@ -953,7 +953,8 @@ export default function Generatetest() {
                           <div className="flex rounded hover:bg-gray-100 dark:hover:bg-gray-600">
                             <div className="flex items-center h-5">
                               <input
-                                id={"attempters-checkbox-" + index}
+                                // id={"attempters-checkbox-" + index}
+                                id="helper-checkbox-1"
                                 aria-describedby="helper-checkbox-text-1"
                                 type="checkbox"
                                 checked={selectedRespondentlists.includes(
@@ -986,7 +987,8 @@ export default function Generatetest() {
                             </div>
                             <div className="ms-2 text-sm">
                               <label
-                                htmlFor={"attempters-checkbox-" + index}
+                                // htmlFor={"attempters-checkbox-" + index}
+                                htmlFor="helper-checkbox-1"
                                 className="font-medium text-gray-900 dark:text-gray-300"
                               >
                                 <div>{respondentlist.title}</div>
